@@ -1,15 +1,13 @@
 use chrono::{NaiveDate, Duration, NaiveDateTime};
 
-//mod global;
-//mod workdays;
-//mod intraday;
-
 use rs_workdays::workdays::{get_workdays, check_workday, get_next_workday, get_previous_workday};
 use rs_workdays::workdays::{get_near_workday, get_next_workdays_number, get_previous_workdays_number, get_workdays_number};
 
 use rs_workdays::intraday::{check_workday_intraday, get_next_border_workday_intraday, get_previous_border_workday_intraday};
 use rs_workdays::intraday::{add_workday_intraday_datetime, sub_workday_intraday_datetime, get_timedelta_workdays_intraday};
 use rs_workdays::extract::{extract_workdays_bool_vec, extract_intraday_bool_vec, extract_workdays_intraday_bool_vec};
+
+//use rs_workdays::global::{set_holidays_csv};
 
 
 // 実行時間計測用
@@ -19,6 +17,8 @@ fn main() {
     println!("program start");
     //println!("range_holidays_vec: {:?}", RANGE_HOLIDAYS_VEC.read().unwrap()); // グローバル変数の処理
     //println!("all_holidays_vec: {:?}", all_holidays_vec);
+
+    //set_holidays_csv("source/holiday_naikaku.csv".to_string(), 2016, 2021);
 
     // get_workdays
     let workday_start_date = NaiveDate::from_ymd(2021,1,1);
