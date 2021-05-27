@@ -1,6 +1,6 @@
 [package]
 name = "rs_workdays"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["deepgreenAN <asami73dgreen63@gmail.com>"]
 edition = "2018"
 
@@ -18,8 +18,5 @@ numpy = "0.13"
 ndarray = "0.14"
 num-traits = "0.2"
 
-#[dependencies.pyo3]
-#version = "0.13.2"
-#features = ["extension-module"]
 
 
