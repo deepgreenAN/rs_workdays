@@ -16,7 +16,7 @@ csvファイルを自分のプロジェクトのデフォルトの位置`source/
 ```
 
 ## 使い方
-基本的に`chrono::NaiveDateTime`・`chrono::NaiveDate`を引数として`chorono::NaiveDateTime`・`chrono::NaiveDate`やそのベクター，文字列とのタプルを返す関数である．
+基本的に`chrono::NaiveDateTime`・`chrono::NaiveDate`を引数として`chrono::NaiveDateTime`・`chrono::NaiveDate`やそのベクター，文字列とのタプルを返す関数である．
 ```rust
 use chrono::{NaiveDate, Duration, NaiveDateTime};
 
