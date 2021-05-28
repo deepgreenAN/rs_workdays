@@ -55,6 +55,9 @@ let select_date = NaiveDate::from_ymd(2021,1,1);
 let next_workday = get_next_workday(select_date, 6);
 println!("next workday of {:?} is {:?}", select_date, next_workday);
 ```
+```
+next workday of 2021-01-01 is 2021-01-12
+```
 
 ### 指定する日数分の営業日を取得
 ```rust
@@ -145,5 +148,7 @@ set_intraday_borders(intraday_borders);
 デフォルトに設定しなくても後からcsvファイルを読み込める．範囲年を明示する．
 ```rust
 use rs_workdays::global::{set_holidays_csv};
+```
+```rust
 set_holidays_csv("source/holiday_naikaku.csv".to_string(), 2016, 2021);
 ```
