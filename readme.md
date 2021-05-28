@@ -1,5 +1,5 @@
 # 営業日・営業時間のデータを取得・抽出
-営業日のデータを取得，Vec<NaiveDateTime>から営業日・営業時間のデータを抽出できる．[こちら](https://github.com/deepgreenAN/py_workdays)のrust実装バージョン．
+営業日のデータを取得，`Vec<NaiveDateTime>`から営業日・営業時間のデータを抽出できる．[こちら](https://github.com/deepgreenAN/py_workdays)のrust実装バージョン．
 
 ## installation
 Cargo.tomlに以下を追加
