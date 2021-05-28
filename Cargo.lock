@@ -388,7 +388,6 @@ dependencies = [
  "csv",
  "lazy_static",
  "ndarray",
- "num-traits",
  "numpy",
 ]
 
