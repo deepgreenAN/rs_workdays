@@ -3,12 +3,18 @@ use chrono::{NaiveDateTime};
 use super::global::{INTRADAY_BORDERS, DEFAULT_DATE_1};
 use super::workdays::{get_workdays};
 
+/// Vec<NaiveDatetime>から営業日のものをboolとして抽出
+/// # Argments
+/// - datetime_vec: 抽出したい日時のベクター
+/// 
+/// # Returns
+/// ブールのベクター
 pub fn extract_workdays_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
     let mut bool_vec = vec![false;datetime_vec.len()];
     let first_date = datetime_vec.first().unwrap().date();
     let last_date = datetime_vec.last().unwrap().date();
 
-    let workdays_vec = get_workdays(first_date, last_date, "both");
+    let workdays_vec = get_workdays(first_date, last_date, "not");
     let mut workdays_iter = workdays_vec.iter();
 
     let mut one_workday = workdays_iter.next().unwrap_or(&DEFAULT_DATE_1);
@@ -47,6 +53,12 @@ pub fn extract_workdays_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> 
     return bool_vec;
 }
 
+/// Vec<NaiveDatetime>から営業時間のものをboolとして抽出
+/// # Argments
+/// - datetime_vec: 抽出したい日時のベクター
+/// 
+/// # Returns
+/// ブールのベクター
 pub fn extract_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let mut bool_vec = vec![false;datetime_vec.len()];
@@ -102,12 +114,18 @@ pub fn extract_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> 
     return bool_vec;
 }
 
+/// Vec<NaiveDatetime>から営業日・営業時間のものをboolとして抽出
+/// # Argments
+/// - datetime_vec: 抽出したい日時のベクター
+/// 
+/// # Returns
+/// ブールのベクター
 pub fn extract_workdays_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
     let mut bool_vec = vec![false;datetime_vec.len()];
     let first_date = datetime_vec.first().unwrap().date();
     let last_date = datetime_vec.last().unwrap().date();
 
-    let workdays_vec = get_workdays(first_date, last_date, "both");
+    let workdays_vec = get_workdays(first_date, last_date, "not");
     let mut workdays_iter = workdays_vec.iter();
 
     let mut one_workday = workdays_iter.next().unwrap_or(&DEFAULT_DATE_1);

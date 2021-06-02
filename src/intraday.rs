@@ -3,6 +3,13 @@ use chrono::{NaiveDate, NaiveDateTime, NaiveTime, Duration};
 use super::global::{INTRADAY_BORDERS, TimeBorder};
 use super::workdays::{check_workday, get_next_workday, get_previous_workday, get_workdays};
 
+
+/// select_datetimeが営業日・営業時間内であるかどうかを判定
+/// # Argments
+/// - select_datetime: 指定する日時
+/// 
+/// # Returns
+/// 営業日・営業時間内であるかどうか
 pub fn check_workday_intraday(select_datetime: NaiveDateTime) -> bool {
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let select_date = select_datetime.date();
@@ -18,7 +25,15 @@ pub fn check_workday_intraday(select_datetime: NaiveDateTime) -> bool {
     }
 }
 
-
+/// 次の営業日・営業時間内のdatetimeをその状態とともに取得
+/// # Argments
+/// - select_datetime: 指定する日時
+/// 
+/// # Returns
+/// - out_datetime: 次の営業日・営業時間内のdatetime
+/// - 状態を示す文字列
+///     - 'border_start': 営業時間の開始
+///     - 'border_end': 営業時間の終了 
 pub fn get_next_border_workday_intraday(select_datetime: NaiveDateTime) -> (NaiveDateTime, &'static str) {
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let select_date = select_datetime.date();
@@ -58,7 +73,15 @@ pub fn get_next_border_workday_intraday(select_datetime: NaiveDateTime) -> (Naiv
     }
 }
 
-
+/// 前の営業日・営業時間内のdatetimeをその状態とともに取得
+/// # Argments
+/// - select_datetime: 指定する日時
+/// 
+/// # Returns
+/// - out_datetime: 前の営業日・営業時間内のdatetime
+/// - 状態を示す文字列
+///     - 'border_start': 営業時間の開始
+///     - 'border_end': 営業時間の終了 
 pub fn get_previous_border_workday_intraday(select_datetime: NaiveDateTime, force_is_end:bool) -> (NaiveDateTime, &'static str) {
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let select_date = select_datetime.date();
@@ -108,7 +131,16 @@ pub fn get_previous_border_workday_intraday(select_datetime: NaiveDateTime, forc
     }
 }
 
-
+/// 最近の営業日・営業時間内のdatetimeをその状態とともに取得．select_datetimeが営業日・営業時間内の場合そのまま返る．
+/// # Argments
+/// - select_datetime: 指定する日時
+/// 
+/// # Returns
+/// - out_datetime: 前の営業日・営業時間内のdatetime
+/// - 状態を示す文字列
+///     - 'border_intra': 営業時間内
+///     - 'border_start': 営業時間の開始
+///     - 'border_end': 営業時間の終了
 pub fn get_near_workday_intraday(select_datetime: NaiveDateTime, is_after:bool) -> (NaiveDateTime, &'static str) {
     if check_workday_intraday(select_datetime) {
         return (select_datetime, "border_intra");
@@ -121,7 +153,13 @@ pub fn get_near_workday_intraday(select_datetime: NaiveDateTime, is_after:bool) 
     }
 }
 
-
+/// 営業日・営業時間を考慮しDateTimeを加算する．
+/// # Argments
+/// - select_datetime: 指定する日時
+/// - dela_time: 加算するDuration
+/// 
+/// # Returns
+/// 加算された日時
 pub fn add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
     let mut all_delta_time = delta_time;
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
@@ -206,7 +244,13 @@ pub fn add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time:
     return select_datetime;  // 計算に失敗している
 }
 
-
+/// 営業日・営業時間を考慮しDateTimeを減算する．
+/// # Argments
+/// - select_datetime: 指定する日時
+/// - dela_time: 加算するDuration
+/// 
+/// # Returns
+/// 減算された日時
 pub fn sub_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
     let mut all_delta_time = delta_time;
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
@@ -272,7 +316,13 @@ pub fn sub_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time:
     return select_datetime;  // 計算に失敗している
 }
 
-
+/// start_datetimeからend_datetimeの営業日・営業時間を取得
+/// # Argments
+/// - start_datetime: 開始日時
+/// - end_datetime: 終了日時
+/// 
+/// # Returns
+/// 営業日・営業時間のDuration
 pub fn get_timedelta_workdays_intraday(start_datetime: NaiveDateTime, end_datetime: NaiveDateTime) -> Duration {
     let mut all_delta_time = Duration::zero();
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
@@ -307,7 +357,7 @@ pub fn get_timedelta_workdays_intraday(start_datetime: NaiveDateTime, end_dateti
     }
 
     // 開始時刻から終了時刻までの営業日(開始・終了はふくまない)
-    let workdays = get_workdays(start_date, end_date, &"not");
+    let workdays = get_workdays(start_date, end_date, "both");
 
     for _ in 0..workdays.len() {
         all_delta_time = all_delta_time + one_workday_delta_time;
