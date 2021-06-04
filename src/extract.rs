@@ -9,6 +9,26 @@ use super::workdays::{get_workdays};
 /// 
 /// # Returns
 /// ブールのベクター
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDateTime, NaiveDate};
+/// use rs_workdays::extract::*;
+/// let start_datetime_timestamp: i64 = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0).timestamp();
+/// let add_sec: i64 = 3600; // 1時間
+/// let datetime_vec: Vec<NaiveDateTime> = vec![0;100].iter().cloned().enumerate()
+/// .map(|(i,_x)| {NaiveDateTime::from_timestamp(start_datetime_timestamp+ (i as i64) *add_sec, 0)}).collect();
+/// let bool_vec: Vec<bool> = extract_workdays_bool_vec(&datetime_vec);
+/// let extracted_workdays_datetime: Vec<NaiveDateTime> = datetime_vec.iter().cloned().enumerate()
+/// .filter(|(i,_x)|{bool_vec[*i]}).map(|(_i,x)|{x}).collect();
+/// println!("extrated workdays datetime: {:?}", extracted_workdays_datetime);
+/// ~~~~
+/// 
+/// extrated workdays datetime: [2021-01-04T00:00:00, 2021-01-04T01:00:00, 2021-01-04T02:00:00, 2021-01-04T03:00:00, 2021-01-04T04:00:00,
+///  2021-01-04T05:00:00, 2021-01-04T06:00:00, 2021-01-04T07:00:00, 2021-01-04T08:00:00, 2021-01-04T09:00:00, 2021-01-04T10:00:00,
+///  2021-01-04T11:00:00, 2021-01-04T12:00:00, 2021-01-04T13:00:00, 2021-01-04T14:00:00, 2021-01-04T15:00:00, 2021-01-04T16:00:00,
+///  2021-01-04T17:00:00, 2021-01-04T18:00:00, 2021-01-04T19:00:00, 2021-01-04T20:00:00, 2021-01-04T21:00:00, 2021-01-04T22:00:00,
+///  2021-01-04T23:00:00, 2021-01-05T00:00:00, 2021-01-05T01:00:00, 2021-01-05T02:00:00, 2021-01-05T03:00:00]
 pub fn extract_workdays_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
     let mut bool_vec = vec![false;datetime_vec.len()];
     let first_date = datetime_vec.first().unwrap().date();
@@ -59,6 +79,25 @@ pub fn extract_workdays_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> 
 /// 
 /// # Returns
 /// ブールのベクター
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDateTime, NaiveDate};
+/// use rs_workdays::extract::*;
+/// let start_datetime_timestamp: i64 = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0).timestamp();
+/// let add_sec: i64 = 3600; // 1時間
+/// let datetime_vec: Vec<NaiveDateTime> = vec![0;100].iter().cloned().enumerate()
+/// .map(|(i,_x)| {NaiveDateTime::from_timestamp(start_datetime_timestamp+ (i as i64) *add_sec, 0)}).collect();
+/// let bool_vec: Vec<bool> = extract_intraday_bool_vec(&datetime_vec);
+/// let extracted_intraday_datetime: Vec<NaiveDateTime> = datetime_vec.iter().cloned().enumerate()
+/// .filter(|(i,_x)|{bool_vec[*i]}).map(|(_i,x)|{x}).collect();
+/// println!("extracted intraday datetime: {:?}", extracted_intraday_datetime);
+/// ~~~~
+/// 
+/// extracted intraday datetime: [2021-01-01T09:00:00, 2021-01-01T10:00:00, 2021-01-01T11:00:00, 2021-01-01T13:00:00, 2021-01-01T14:00:00,
+///  2021-01-02T09:00:00, 2021-01-02T10:00:00, 2021-01-02T11:00:00, 2021-01-02T13:00:00, 2021-01-02T14:00:00, 2021-01-03T09:00:00,
+///  2021-01-03T10:00:00, 2021-01-03T11:00:00, 2021-01-03T13:00:00, 2021-01-03T14:00:00, 2021-01-04T09:00:00, 2021-01-04T10:00:00,
+///  2021-01-04T11:00:00, 2021-01-04T13:00:00, 2021-01-04T14:00:00]
 pub fn extract_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let mut bool_vec = vec![false;datetime_vec.len()];
@@ -120,6 +159,23 @@ pub fn extract_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> 
 /// 
 /// # Returns
 /// ブールのベクター
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDateTime, NaiveDate};
+/// use rs_workdays::extract::*;
+/// let start_datetime_timestamp: i64 = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0).timestamp();
+/// let add_sec: i64 = 3600; // 1時間
+/// let datetime_vec: Vec<NaiveDateTime> = vec![0;100].iter().cloned().enumerate()
+/// .map(|(i,_x)| {NaiveDateTime::from_timestamp(start_datetime_timestamp+ (i as i64) *add_sec, 0)}).collect();
+/// let bool_vec: Vec<bool> = extract_workdays_intraday_bool_vec(&datetime_vec);
+/// let extracted_workdays_intraday_datetime: Vec<NaiveDateTime> = datetime_vec.iter().cloned().enumerate()
+/// .filter(|(i,_x)|{bool_vec[*i]}).map(|(_i,x)|{x}).collect();
+/// println!("extracted workday intraday datetime: {:?}", extracted_workdays_intraday_datetime);
+/// ~~~~
+/// 
+/// extracted workday intraday datetime: [2021-01-04T09:00:00, 2021-01-04T10:00:00, 2021-01-04T11:00:00, 2021-01-04T13:00:00,
+///  2021-01-04T14:00:00]
 pub fn extract_workdays_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
     let mut bool_vec = vec![false;datetime_vec.len()];
     let first_date = datetime_vec.first().unwrap().date();

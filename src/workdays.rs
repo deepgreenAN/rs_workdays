@@ -16,6 +16,21 @@ use super::global::{RANGE_HOLIDAYS_VEC, ONE_HOLIDAY_WEEKDAY_SET, DEFAULT_DATE_1}
 /// 
 /// # Returns
 /// workdays_vec: 営業日のべクター
+/// 
+/// # Example
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::workdays::*;
+/// let workday_start_date = NaiveDate::from_ymd(2021,1,1);
+/// let workday_end_date = NaiveDate::from_ymd(2021,2,1);
+/// let workdays_vec = get_workdays(workday_start_date, workday_end_date, "left");
+/// println!("workdays_vec: {:?}", workdays_vec);
+/// ~~~~
+/// 
+/// workdays_vec: [2021-01-04, 2021-01-05, 2021-01-06, 2021-01-07, 2021-01-08, 2021-01-12, 2021-01-13,
+///  2021-01-14, 2021-01-15, 2021-01-18, 2021-01-19, 2021-01-20, 2021-01-21, 2021-01-22, 2021-01-25,
+///  2021-01-26, 2021-01-27, 2021-01-28, 2021-01-29]
+///
 pub fn get_workdays(start_date: NaiveDate, end_date: NaiveDate, closed: &str) -> Vec<NaiveDate> {
 
     let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
@@ -69,6 +84,15 @@ pub fn get_workdays(start_date: NaiveDate, end_date: NaiveDate, closed: &str) ->
 /// 
 /// # Returns
 /// 営業日であるかどうか
+/// 
+/// # Example
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::workdays::*;
+/// let select_date = NaiveDate::from_ymd(2021,1,1);
+/// let is_workday = check_workday(select_date);
+/// assert!(!is_workday);
+/// ~~~~
 pub fn check_workday(select_date: NaiveDate) -> bool {
     let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
     let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
@@ -86,6 +110,15 @@ pub fn check_workday(select_date: NaiveDate) -> bool {
 /// 
 /// # Returns
 /// one_day: 次の営業日
+/// 
+/// # Example
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::workdays::*;
+/// let select_date = NaiveDate::from_ymd(2021,1,1);
+/// let next_workday = get_next_workday(select_date, 6);
+/// assert_eq!(next_workday, NaiveDate::from_ymd(2021,01,12));
+/// ~~~~
 pub fn get_next_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
     let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
     let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
@@ -135,6 +168,15 @@ pub fn get_next_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
 /// 
 /// # Returns
 /// one_day: 前の営業日
+/// 
+/// # Example
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::workdays::*;
+/// let select_date = NaiveDate::from_ymd(2021,1,12);
+/// let previous_workday = get_previous_workday(select_date, 6);
+/// assert_eq!(previous_workday, NaiveDate::from_ymd(2020,12,31));
+/// ~~~~
 pub fn get_previous_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
     let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
     let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
@@ -184,6 +226,19 @@ pub fn get_previous_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
 /// 
 /// # Returns
 /// 最近の営業日
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::workdays::*;
+/// let select_date = NaiveDate::from_ymd(2021, 1, 1);
+/// let near_workday = get_near_workday(select_date, true);
+/// assert_eq!(near_workday, NaiveDate::from_ymd(2021,01,04));
+/// 
+/// let select_date = NaiveDate::from_ymd(2021, 1, 1);
+/// let near_workday = get_near_workday(select_date, false);
+/// assert_eq!(near_workday, NaiveDate::from_ymd(2020,12,31))
+/// ~~~~
 pub fn get_near_workday(select_date: NaiveDate, is_after: bool) -> NaiveDate{
     if check_workday(select_date) { // 指定日が営業日である場合
         select_date
@@ -203,6 +258,19 @@ pub fn get_near_workday(select_date: NaiveDate, is_after: bool) -> NaiveDate{
 /// 
 /// # Returns
 /// workdays_vec: 営業日のベクター
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::workdays::*;
+/// let start_date = NaiveDate::from_ymd(2021, 1, 1);
+/// let workdays_vec = get_next_workdays_number(start_date, 19);
+/// println!("workdays_vec: {:?}", workdays_vec);
+/// ~~~~
+/// 
+/// workdays_vec: [2021-01-04, 2021-01-05, 2021-01-06, 2021-01-07, 2021-01-08, 2021-01-12, 2021-01-13,
+///  2021-01-14, 2021-01-15, 2021-01-18, 2021-01-19, 2021-01-20, 2021-01-21, 2021-01-22, 2021-01-25,
+///  2021-01-26, 2021-01-27, 2021-01-28, 2021-01-29]
 pub fn get_next_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDate>{
     let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
     let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
@@ -249,6 +317,20 @@ pub fn get_next_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDa
 /// 
 /// # Returns
 /// workdays_vec: 営業日のベクター
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::workdays::*;
+/// let start_date = NaiveDate::from_ymd(2021,1,29);
+/// let mut workdays_vec = get_previous_workdays_number(start_date, 19);
+/// workdays_vec.sort();
+/// println!("workdays_vec: {:?}", workdays_vec);
+/// ~~~~
+/// 
+/// workdays_vec: [2021-01-04, 2021-01-05, 2021-01-06, 2021-01-07, 2021-01-08, 2021-01-12, 2021-01-13,
+///  2021-01-14, 2021-01-15, 2021-01-18, 2021-01-19, 2021-01-20, 2021-01-21, 2021-01-22, 2021-01-25,
+///  2021-01-26, 2021-01-27, 2021-01-28, 2021-01-29]
 pub fn get_previous_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDate>{
     let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
     let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
@@ -295,6 +377,19 @@ pub fn get_previous_workdays_number(start_date: NaiveDate, days: i32) -> Vec<Nai
 /// 
 /// # Returns
 /// workdays_vec: 営業日のベクター
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::workdays::*;
+/// let start_date = NaiveDate::from_ymd(2021, 1, 1);
+/// let workdays_vec = get_workdays_number(start_date, 19);
+/// println!("workdays_vec: {:?}", workdays_vec);
+/// ~~~~
+/// 
+/// workdays_vec: [2021-01-04, 2021-01-05, 2021-01-06, 2021-01-07, 2021-01-08, 2021-01-12, 2021-01-13,
+///  2021-01-14, 2021-01-15, 2021-01-18, 2021-01-19, 2021-01-20, 2021-01-21, 2021-01-22, 2021-01-25,
+///  2021-01-26, 2021-01-27, 2021-01-28, 2021-01-29]
 pub fn get_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDate> {
     if days > 0 {
         get_next_workdays_number(start_date, days)

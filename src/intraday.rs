@@ -10,6 +10,15 @@ use super::workdays::{check_workday, get_next_workday, get_previous_workday, get
 /// 
 /// # Returns
 /// 営業日・営業時間内であるかどうか
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::intraday::*;
+/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(10,0,0);
+/// let is_workday_intraday = check_workday_intraday(select_datetime);
+/// assert!(!is_workday_intraday);
+/// ~~~~
 pub fn check_workday_intraday(select_datetime: NaiveDateTime) -> bool {
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let select_date = select_datetime.date();
@@ -33,7 +42,16 @@ pub fn check_workday_intraday(select_datetime: NaiveDateTime) -> bool {
 /// - out_datetime: 次の営業日・営業時間内のdatetime
 /// - 状態を示す文字列
 ///     - 'border_start': 営業時間の開始
-///     - 'border_end': 営業時間の終了 
+///     - 'border_end': 営業時間の終了
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::intraday::*;
+/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+/// let (next_border_datetime, border_symbol) = get_next_border_workday_intraday(select_datetime);
+/// assert_eq!((next_border_datetime, border_symbol), (NaiveDate::from_ymd(2021, 1, 4).and_hms(9,0,0), "border_start"));
+/// ~~~~
 pub fn get_next_border_workday_intraday(select_datetime: NaiveDateTime) -> (NaiveDateTime, &'static str) {
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let select_date = select_datetime.date();
@@ -81,7 +99,24 @@ pub fn get_next_border_workday_intraday(select_datetime: NaiveDateTime) -> (Naiv
 /// - out_datetime: 前の営業日・営業時間内のdatetime
 /// - 状態を示す文字列
 ///     - 'border_start': 営業時間の開始
-///     - 'border_end': 営業時間の終了 
+///     - 'border_end': 営業時間の終了
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::intraday::*;
+/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+/// let (previous_border_datetime, border_symbol) = get_previous_border_workday_intraday(select_datetime, false);
+/// assert_eq!((previous_border_datetime, border_symbol), (NaiveDate::from_ymd(2020, 12, 31).and_hms(15,0,0), "border_end"));
+/// 
+/// let select_datetime = NaiveDate::from_ymd(2021,1,4).and_hms(15,0,0);
+/// let (previous_border_datetime, border_symbol) = get_previous_border_workday_intraday(select_datetime, false);
+/// assert_eq!((previous_border_datetime, border_symbol), (NaiveDate::from_ymd(2021, 1, 4).and_hms(15,0,0), "border_end"));
+/// 
+/// let select_datetime = NaiveDate::from_ymd(2021,1,4).and_hms(15,0,0);
+/// let (previous_border_datetime, border_symbol) = get_previous_border_workday_intraday(select_datetime, true);
+/// assert_eq!((previous_border_datetime, border_symbol), (NaiveDate::from_ymd(2021, 1, 4).and_hms(12,30,0), "border_start"));
+/// ~~~~
 pub fn get_previous_border_workday_intraday(select_datetime: NaiveDateTime, force_is_end:bool) -> (NaiveDateTime, &'static str) {
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let select_date = select_datetime.date();
@@ -134,6 +169,7 @@ pub fn get_previous_border_workday_intraday(select_datetime: NaiveDateTime, forc
 /// 最近の営業日・営業時間内のdatetimeをその状態とともに取得．select_datetimeが営業日・営業時間内の場合そのまま返る．
 /// # Argments
 /// - select_datetime: 指定する日時
+/// - is_after: 後ろを探索するかどうか
 /// 
 /// # Returns
 /// - out_datetime: 前の営業日・営業時間内のdatetime
@@ -141,6 +177,23 @@ pub fn get_previous_border_workday_intraday(select_datetime: NaiveDateTime, forc
 ///     - 'border_intra': 営業時間内
 ///     - 'border_start': 営業時間の開始
 ///     - 'border_end': 営業時間の終了
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate};
+/// use rs_workdays::intraday::*;
+/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+/// let (near_workday_intraday_datetime, border_symbol) = get_near_workday_intraday(select_datetime, true);
+/// assert_eq!((near_workday_intraday_datetime, border_symbol), (NaiveDate::from_ymd(2021, 1, 4).and_hms(9,0,0), "border_start"));
+/// 
+/// let select_datetime = NaiveDate::from_ymd(2021,1,4).and_hms(10,0,0);
+/// let (near_workday_intraday_datetime, border_symbol) = get_near_workday_intraday(select_datetime, true);
+/// assert_eq!((near_workday_intraday_datetime, border_symbol), (NaiveDate::from_ymd(2021, 1, 4).and_hms(10,0,0), "border_intra"));
+/// 
+/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+/// let (near_workday_intraday_datetime, border_symbol) = get_near_workday_intraday(select_datetime, false);
+/// assert_eq!((near_workday_intraday_datetime, border_symbol), (NaiveDate::from_ymd(2020, 12, 31).and_hms(15,0,0), "border_end"));
+/// ~~~~
 pub fn get_near_workday_intraday(select_datetime: NaiveDateTime, is_after:bool) -> (NaiveDateTime, &'static str) {
     if check_workday_intraday(select_datetime) {
         return (select_datetime, "border_intra");
@@ -160,6 +213,16 @@ pub fn get_near_workday_intraday(select_datetime: NaiveDateTime, is_after:bool) 
 /// 
 /// # Returns
 /// 加算された日時
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate, Duration};
+/// use rs_workdays::intraday::*;
+/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+/// let add_duration = Duration::hours(2);
+/// let added_workday_intraday_datetime = add_workday_intraday_datetime(select_datetime, add_duration);
+/// assert_eq!(added_workday_intraday_datetime, NaiveDate::from_ymd(2021,1,4).and_hms(11,0,0));
+/// ~~~~
 pub fn add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
     let mut all_delta_time = delta_time;
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
@@ -251,6 +314,16 @@ pub fn add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time:
 /// 
 /// # Returns
 /// 減算された日時
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate, Duration};
+/// use rs_workdays::intraday::*;
+/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+/// let sub_duration = Duration::hours(2);
+/// let subed_workday_intraday_datetime = sub_workday_intraday_datetime(select_datetime, sub_duration);
+/// assert_eq!(subed_workday_intraday_datetime, NaiveDate::from_ymd(2020,12,31).and_hms(13,0,0));
+/// ~~~~
 pub fn sub_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
     let mut all_delta_time = delta_time;
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
@@ -323,6 +396,16 @@ pub fn sub_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time:
 /// 
 /// # Returns
 /// 営業日・営業時間のDuration
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate, Duration};
+/// use rs_workdays::intraday::*;
+/// let start_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+/// let end_datetime = NaiveDate::from_ymd(2021,1,4).and_hms(15,0,0);
+/// let span_duration = get_timedelta_workdays_intraday(start_datetime, end_datetime);
+/// assert_eq!(span_duration, Duration::hours(5));
+/// ~~~~
 pub fn get_timedelta_workdays_intraday(start_datetime: NaiveDateTime, end_datetime: NaiveDateTime) -> Duration {
     let mut all_delta_time = Duration::zero();
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();

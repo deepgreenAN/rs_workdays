@@ -5,7 +5,7 @@ use chrono::{NaiveDate, Duration, NaiveDateTime, Weekday, NaiveTime};
 use rs_workdays::workdays::{get_workdays, check_workday, get_next_workday, get_previous_workday};
 use rs_workdays::workdays::{get_near_workday, get_next_workdays_number, get_previous_workdays_number, get_workdays_number};
 
-use rs_workdays::intraday::{check_workday_intraday, get_next_border_workday_intraday, get_previous_border_workday_intraday};
+use rs_workdays::intraday::{check_workday_intraday, get_next_border_workday_intraday, get_previous_border_workday_intraday, get_near_workday_intraday};
 use rs_workdays::intraday::{add_workday_intraday_datetime, sub_workday_intraday_datetime, get_timedelta_workdays_intraday};
 use rs_workdays::extract::{extract_workdays_bool_vec, extract_intraday_bool_vec, extract_workdays_intraday_bool_vec};
 
@@ -22,7 +22,7 @@ fn main() {
     // get_workdays
     let workday_start_date = NaiveDate::from_ymd(2021,1,1);
     let workday_end_date = NaiveDate::from_ymd(2021,2,1);
-    let workdays_vec = get_workdays(workday_start_date, workday_end_date, &"left");
+    let workdays_vec = get_workdays(workday_start_date, workday_end_date, "left");
     println!("workdays_vec: {:?}", workdays_vec);
 
     // check_workday
@@ -40,7 +40,6 @@ fn main() {
     let previous_workday = get_previous_workday(select_date, 6);
     println!("previous workday of {:?} is {:?}", select_date, previous_workday);
 
-
     // get_near_workday
     let select_date = NaiveDate::from_ymd(2021, 1, 1);
     let near_workday = get_near_workday(select_date, true);
@@ -49,7 +48,7 @@ fn main() {
     // get_near_workday
     let select_date = NaiveDate::from_ymd(2021, 1, 1);
     let near_workday = get_near_workday(select_date, false);
-    println!("near workday (after) of {:?} is {:?}", select_date, near_workday);
+    println!("near workday (before) of {:?} is {:?}", select_date, near_workday);
    
     // get_next_workdays_number
     let start_date = NaiveDate::from_ymd(2021, 1, 1);
@@ -86,9 +85,22 @@ fn main() {
     let (previous_border_datetime, border_symbol) = get_previous_border_workday_intraday(select_datetime, false);
     println!("previous_border_datetime: {:?}, border_symbol: {:?}", previous_border_datetime, border_symbol);
 
-    let select_datetime = NaiveDate::from_ymd(2021,1,4).and_hms(12,30,0);
-    let (previous_border_datetime, border_symbol) = get_previous_border_workday_intraday(select_datetime, false);
+    let select_datetime = NaiveDate::from_ymd(2021,1,4).and_hms(15,0,0);
+    let (previous_border_datetime, border_symbol) = get_previous_border_workday_intraday(select_datetime, true);
     println!("previous_border_datetime: {:?}, border_symbol: {:?}", previous_border_datetime, border_symbol);
+
+    // get_near_workday_intraday
+    let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+    let (near_workday_intraday_datetime, border_symbol) = get_near_workday_intraday(select_datetime, true);
+    println!("near_workday_intraday_datetime: {:?}, border_symbol: {:?}", near_workday_intraday_datetime, border_symbol);
+
+    let select_datetime = NaiveDate::from_ymd(2021,1,4).and_hms(10,0,0);
+    let (near_workday_intraday_datetime, border_symbol) = get_near_workday_intraday(select_datetime, true);
+    println!("near_workday_intraday_datetime: {:?}, border_symbol: {:?}", near_workday_intraday_datetime, border_symbol);  
+
+    let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+    let (near_workday_intraday_datetime, border_symbol) = get_near_workday_intraday(select_datetime, false);
+    println!("near_workday_intraday_datetime: {:?}, border_symbol: {:?}", near_workday_intraday_datetime, border_symbol);  
 
     // add_workday_intraday_datetime
     let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
