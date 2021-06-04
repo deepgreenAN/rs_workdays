@@ -48,6 +48,11 @@ lazy_static! {
     pub static ref DEFAULT_DATE_2: NaiveDate = NaiveDate::from_ymd(2101,1,1);  // どれとも重ならないような日にち
 }
 
+/// csvを読み込んで利用できる休日の更新をする
+/// # Argments
+/// - path_str: csvのパス
+/// - start_year: 利用する開始年(その年の1月1日から)
+/// - end_year: 利用する終了年(その年の12月31日まで)
 pub fn set_holidays_csv(path_str:String, start_year: i32, end_year: i32) {
     let all_holiday_vec = read_csv(path_str).unwrap_or([].to_vec());
     let mut range_holidays_vec = RANGE_HOLIDAYS_VEC.write().unwrap();
@@ -59,13 +64,18 @@ pub fn set_holidays_csv(path_str:String, start_year: i32, end_year: i32) {
     // 代入
     let start_date = NaiveDate::from_ymd(start_year, 1, 1);
     let end_date = NaiveDate::from_ymd(end_year, 12, 31);
-    let made_range_holiday: Vec<NaiveDate> = all_holiday_vec.iter().cloned().filter(|x| {(&start_date <= x) & (&end_date > x)}).collect(); // clonedで要素の所有権を渡していることに注意
+    let made_range_holiday: Vec<NaiveDate> = all_holiday_vec.iter().cloned().filter(|x| {(&start_date <= x) & (&end_date > x)}).collect();
 
     for range_holiday in made_range_holiday {
         range_holidays_vec.push(range_holiday);
     }
 }
 
+/// 休日のベクターから休日の更新をする
+/// # Argments
+/// - holidays_vec: 休日のベクター
+/// - start_year: 利用する開始年(その年の1月1日から)
+/// - end_year: 利用する終了年(その年の12月31日まで)
 pub fn set_range_holidays(holidays_vec: Vec<NaiveDate>, start_year: i32, end_year: i32) {
     let mut range_holidays_vec = RANGE_HOLIDAYS_VEC.write().unwrap();
     // 削除
@@ -76,13 +86,15 @@ pub fn set_range_holidays(holidays_vec: Vec<NaiveDate>, start_year: i32, end_yea
     // 代入
     let start_date = NaiveDate::from_ymd(start_year, 1, 1);
     let end_date = NaiveDate::from_ymd(end_year, 12, 31);
-    let made_range_holiday: Vec<NaiveDate> = holidays_vec.iter().cloned().filter(|x| {(&start_date <= x) & (&end_date > x)}).collect(); // clonedで要素の所有権を渡していることに注意
+    let made_range_holiday: Vec<NaiveDate> = holidays_vec.iter().cloned().filter(|x| {(&start_date <= x) & (&end_date > x)}).collect();
 
     for range_holiday in made_range_holiday {
         range_holidays_vec.push(range_holiday);
     }
 }
 
+/// 休日曜日の更新
+/// py_one_holiday_weekday_set: 休日曜日のセット
 pub fn set_one_holiday_weekday_set(py_one_holiday_weekday_set:HashSet<Weekday>) {
     let mut one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.write().unwrap();
     // 削除
@@ -96,6 +108,8 @@ pub fn set_one_holiday_weekday_set(py_one_holiday_weekday_set:HashSet<Weekday>) 
     }
 }
 
+/// 営業時間境界の更新
+/// py_intrada_borders: 営業時間境界のベクター
 pub fn set_intraday_borders(py_intraday_borders:Vec<TimeBorder>) {
     let mut intraday_borders = INTRADAY_BORDERS.write().unwrap();
 

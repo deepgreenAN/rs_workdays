@@ -299,7 +299,7 @@ pub fn get_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDate> {
     if days > 0 {
         get_next_workdays_number(start_date, days)
     } else if days < 0 {
-        get_previous_workdays_number(start_date, days)
+        get_previous_workdays_number(start_date, days.abs())
     } else { // 0 の場合
         let nan_vec: Vec<NaiveDate> = Vec::new();
         return nan_vec;
