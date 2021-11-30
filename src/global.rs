@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 use chrono::{NaiveDate, Weekday, NaiveTime};
-use lazy_static::lazy_static;
+use once_cell::sync::Lazy;
 use std::error::Error;
 use std::sync::RwLock;
 
@@ -26,27 +26,26 @@ pub fn read_csv(path_str:String) -> Result<Vec<NaiveDate>, Box<dyn Error>> {
 
 //　グローバル変数
 
-lazy_static! {
-    pub static ref RANGE_HOLIDAYS_VEC: RwLock<Vec<NaiveDate>> = {
-        let start_date = NaiveDate::from_ymd(2016, 1, 1);
-        let end_date = NaiveDate::from_ymd(2021, 12, 31);
-        let all_holidays_vec = read_csv("source/holiday_naikaku.csv".to_string()).unwrap_or([].to_vec());
-        //let all_holidays_vec = [].to_vec();
-        let range_holidays_vec: Vec<NaiveDate> = all_holidays_vec.iter().cloned().filter(|x| {(&start_date <= x) & (&end_date > x)}).collect(); // clonedで要素の所有権を渡していることに注意
-        RwLock::new(range_holidays_vec)
-    }; 
-    pub static ref ONE_HOLIDAY_WEEKDAY_SET: RwLock<HashSet<Weekday>> = {
-        RwLock::new([Weekday::Sat, Weekday::Sun].iter().cloned().collect())
-    };
-    pub static ref INTRADAY_BORDERS: RwLock<Vec<TimeBorder>> = {
-        RwLock::new([
-            TimeBorder {start: NaiveTime::from_hms(9,0,0), end: NaiveTime::from_hms(11,30,0)},
-            TimeBorder {start: NaiveTime::from_hms(12,30,0), end: NaiveTime::from_hms(15,0,0)},
-        ].iter().cloned().collect())
-    };
-    pub static ref DEFAULT_DATE_1: NaiveDate = NaiveDate::from_ymd(2100,1,1);  // どれとも重ならないような日にち
-    pub static ref DEFAULT_DATE_2: NaiveDate = NaiveDate::from_ymd(2101,1,1);  // どれとも重ならないような日にち
-}
+pub static RANGE_HOLIDAYS_VEC: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
+    let start_date = NaiveDate::from_ymd(2016, 1, 1);
+    let end_date = NaiveDate::from_ymd(2021, 12, 31);
+    let all_holidays_vec = read_csv("source/holiday_naikaku.csv".to_string()).unwrap_or([].to_vec());
+    //let all_holidays_vec = [].to_vec();
+    let range_holidays_vec: Vec<NaiveDate> = all_holidays_vec.iter().cloned().filter(|x| {(&start_date <= x) & (&end_date > x)}).collect(); // clonedで要素の所有権を渡していることに注意
+    RwLock::new(range_holidays_vec)
+}); 
+pub static ONE_HOLIDAY_WEEKDAY_SET: Lazy<RwLock<HashSet<Weekday>>> = Lazy::new(|| {
+    RwLock::new([Weekday::Sat, Weekday::Sun].iter().cloned().collect())
+});
+pub static INTRADAY_BORDERS: Lazy<RwLock<Vec<TimeBorder>>> = Lazy::new(|| {
+    RwLock::new([
+        TimeBorder {start: NaiveTime::from_hms(9,0,0), end: NaiveTime::from_hms(11,30,0)},
+        TimeBorder {start: NaiveTime::from_hms(12,30,0), end: NaiveTime::from_hms(15,0,0)},
+    ].iter().cloned().collect())
+});
+pub static DEFAULT_DATE_1: Lazy<NaiveDate> = Lazy::new(||{ NaiveDate::from_ymd(2100,1,1) });  // どれとも重ならないような日にち
+pub static DEFAULT_DATE_2: Lazy<NaiveDate> = Lazy::new(||{ NaiveDate::from_ymd(2101,1,1) });  // どれとも重ならないような日にち
+
 
 /// csvを読み込んで利用できる休日の更新をする
 /// # Argments

@@ -11,3 +11,6 @@ pub mod intraday;
 
 /// 営業時間内のデータの抽出
 pub mod extract;
+
+/// エラー
+pub mod error;

@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use chrono::{NaiveDate, Duration, NaiveDateTime, Weekday, NaiveTime};
 
+extern crate rs_workdays;
 use rs_workdays::workdays::{get_workdays, check_workday, get_next_workday, get_previous_workday};
 use rs_workdays::workdays::{get_near_workday, get_next_workdays_number, get_previous_workdays_number, get_workdays_number};
 

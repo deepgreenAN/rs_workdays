@@ -1,7 +1,7 @@
 use chrono::{NaiveDateTime};
 
-use super::global::{INTRADAY_BORDERS, DEFAULT_DATE_1};
-use super::workdays::{get_workdays};
+use crate::global::{INTRADAY_BORDERS, DEFAULT_DATE_1};
+use crate::workdays::{get_workdays};
 
 /// Vec<NaiveDatetime>から営業日のものをboolとして抽出
 /// # Argments

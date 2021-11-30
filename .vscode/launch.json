@@ -7,15 +7,34 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'rs_workdays'",
+            "name": "Debug unit tests in library 'rs_workdays'",
             "cargo": {
                 "args": [
-                    "build",
-                    "--bin=rs_workdays",
+                    "test",
+                    "--no-run",
+                    "--lib",
                     "--package=rs_workdays"
                 ],
                 "filter": {
                     "name": "rs_workdays",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'simple_use'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=simple_use",
+                    "--package=rs_workdays"
+                ],
+                "filter": {
+                    "name": "simple_use",
                     "kind": "bin"
                 }
             },
@@ -25,17 +44,55 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'rs_workdays'",
+            "name": "Debug unit tests in executable 'simple_use'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=rs_workdays",
+                    "--bin=simple_use",
                     "--package=rs_workdays"
                 ],
                 "filter": {
-                    "name": "rs_workdays",
+                    "name": "simple_use",
                     "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'test_base'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=test_base",
+                    "--package=rs_workdays"
+                ],
+                "filter": {
+                    "name": "test_base",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'test_global'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=test_global",
+                    "--package=rs_workdays"
+                ],
+                "filter": {
+                    "name": "test_global",
+                    "kind": "test"
                 }
             },
             "args": [],
