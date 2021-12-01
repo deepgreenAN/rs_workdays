@@ -24,8 +24,8 @@ pub fn read_csv(path_str:String) -> Result<Vec<NaiveDate>, Box<dyn Error>> {
     Ok(holiday_vec)
 }
 
-//　グローバル変数
-
+// グローバル変数
+// 祝日データ
 pub static RANGE_HOLIDAYS_VEC: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
     let start_date = NaiveDate::from_ymd(2016, 1, 1);
     let end_date = NaiveDate::from_ymd(2021, 12, 31);
@@ -33,18 +33,21 @@ pub static RANGE_HOLIDAYS_VEC: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
     //let all_holidays_vec = [].to_vec();
     let range_holidays_vec: Vec<NaiveDate> = all_holidays_vec.iter().cloned().filter(|x| {(&start_date <= x) & (&end_date > x)}).collect(); // clonedで要素の所有権を渡していることに注意
     RwLock::new(range_holidays_vec)
-}); 
+});
+// 休日曜日
 pub static ONE_HOLIDAY_WEEKDAY_SET: Lazy<RwLock<HashSet<Weekday>>> = Lazy::new(|| {
     RwLock::new([Weekday::Sat, Weekday::Sun].iter().cloned().collect())
 });
+// 営業時間の境界
 pub static INTRADAY_BORDERS: Lazy<RwLock<Vec<TimeBorder>>> = Lazy::new(|| {
     RwLock::new([
         TimeBorder {start: NaiveTime::from_hms(9,0,0), end: NaiveTime::from_hms(11,30,0)},
         TimeBorder {start: NaiveTime::from_hms(12,30,0), end: NaiveTime::from_hms(15,0,0)},
     ].iter().cloned().collect())
 });
-pub static DEFAULT_DATE_1: Lazy<NaiveDate> = Lazy::new(||{ NaiveDate::from_ymd(2100,1,1) });  // どれとも重ならないような日にち
-pub static DEFAULT_DATE_2: Lazy<NaiveDate> = Lazy::new(||{ NaiveDate::from_ymd(2101,1,1) });  // どれとも重ならないような日にち
+// どれとも重ならない日
+pub static IMPOSSIBLE_DATE_1: Lazy<NaiveDate> = Lazy::new(||{ NaiveDate::from_ymd(2100,1,1) });  // どれとも重ならないような日にち
+pub static IMPOSSIBLE_DATE_2: Lazy<NaiveDate> = Lazy::new(||{ NaiveDate::from_ymd(2101,1,1) });  // どれとも重ならないような日にち
 
 
 /// csvを読み込んで利用できる休日の更新をする
@@ -93,8 +96,8 @@ pub fn set_range_holidays(holidays_vec: Vec<NaiveDate>, start_year: i32, end_yea
 }
 
 /// 休日曜日の更新
-/// py_one_holiday_weekday_set: 休日曜日のセット
-pub fn set_one_holiday_weekday_set(py_one_holiday_weekday_set:HashSet<Weekday>) {
+/// new_one_holiday_weekday_set: 休日曜日のセット
+pub fn set_one_holiday_weekday_set(new_one_holiday_weekday_set:HashSet<Weekday>) {
     let mut one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.write().unwrap();
     // 削除
     one_holiday_weekday_set.clear();
@@ -102,14 +105,14 @@ pub fn set_one_holiday_weekday_set(py_one_holiday_weekday_set:HashSet<Weekday>) 
     assert!(one_holiday_weekday_set.is_empty());
 
     // 代入
-    for one_holiday_weekday in py_one_holiday_weekday_set.iter() {
+    for one_holiday_weekday in new_one_holiday_weekday_set.iter() {
         one_holiday_weekday_set.insert(*one_holiday_weekday);
     }
 }
 
 /// 営業時間境界の更新
-/// py_intrada_borders: 営業時間境界のベクター
-pub fn set_intraday_borders(py_intraday_borders:Vec<TimeBorder>) {
+/// new_intrada_borders: 営業時間境界のベクター
+pub fn set_intraday_borders(new_intraday_borders:Vec<TimeBorder>) {
     let mut intraday_borders = INTRADAY_BORDERS.write().unwrap();
 
     // 削除
@@ -118,7 +121,7 @@ pub fn set_intraday_borders(py_intraday_borders:Vec<TimeBorder>) {
     assert!(intraday_borders.is_empty());
 
     // 代入
-    for one_intraday_border in py_intraday_borders.iter(){
+    for one_intraday_border in new_intraday_borders.iter(){
         intraday_borders.push(*one_intraday_border);
     }
 }

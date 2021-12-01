@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use chrono::{NaiveDate, Datelike};
 
-use crate::global::{RANGE_HOLIDAYS_VEC, ONE_HOLIDAY_WEEKDAY_SET, DEFAULT_DATE_1};
+use crate::global::{RANGE_HOLIDAYS_VEC, ONE_HOLIDAY_WEEKDAY_SET, IMPOSSIBLE_DATE_1};
 
 
 /// start_dateからend_dateまでの営業日を取得
@@ -132,19 +132,19 @@ pub fn get_next_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
     let mut holiday_iter = holidays_bigger_select.iter();
     let mut day_iter = select_date.iter_days(); 
 
-    let mut one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+    let mut one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
     let mut one_day = day_iter.next().unwrap();
 
     // 最初はloopの外で，さらに初日がworkdaysでもカウントしない
     if one_day==*one_holiday {
-        one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+        one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
     }
 
     one_day = day_iter.next().unwrap();
 
     loop {
         if one_day==*one_holiday { // その日が祝日である
-            one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+            one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
         } else { // その日が祝日でない
             if !one_holiday_weekday_set.contains(&one_day.weekday()) { // その日が休日曜日でない
                 counter += 1; // カウンターをインクリメント
@@ -190,19 +190,19 @@ pub fn get_previous_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
     // イテレーターの作成
     let mut holiday_iter = holidays_smaller_select.iter();
 
-    let mut one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+    let mut one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
     let mut one_day = select_date;
 
     // 最初はloopの外で，さらに初日がworkdaysでもカウントしない
     if one_day==*one_holiday {
-        one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+        one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
     }
 
     one_day = one_day.pred_opt().unwrap();
 
     loop {
         if one_day==*one_holiday { // その日が祝日である
-            one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+            one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
         } else { // その日が祝日でない
             if !one_holiday_weekday_set.contains(&one_day.weekday()) { // その日が休日曜日でない
                 counter += 1; // カウンターをインクリメント
@@ -284,7 +284,7 @@ pub fn get_next_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDa
     let mut holiday_iter = holidays_bigger_select.iter();
     let mut day_iter = start_date.iter_days(); 
 
-    let mut one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+    let mut one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
     let mut one_day = day_iter.next().unwrap();
 
     let mut workdays_vec: Vec<NaiveDate> = Vec::new();
@@ -292,7 +292,7 @@ pub fn get_next_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDa
     // 初日もカウントする
     loop {
         if one_day==*one_holiday { // その日が祝日である
-            one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+            one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
         } else { // その日が祝日でない
             if !one_holiday_weekday_set.contains(&one_day.weekday()) { // その日が休日曜日でない
                 counter += 1; // カウンターをインクリメント
@@ -344,7 +344,7 @@ pub fn get_previous_workdays_number(start_date: NaiveDate, days: i32) -> Vec<Nai
     // イテレーターの作成
     let mut holiday_iter = holidays_smaller_select.iter();
 
-    let mut one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+    let mut one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
     let mut one_day = start_date;
 
     let mut workdays_vec: Vec<NaiveDate> = Vec::new();
@@ -352,7 +352,7 @@ pub fn get_previous_workdays_number(start_date: NaiveDate, days: i32) -> Vec<Nai
     // 初日もカウントする
     loop {
         if one_day==*one_holiday { // その日が祝日である
-            one_holiday = holiday_iter.next().unwrap_or(&DEFAULT_DATE_1);
+            one_holiday = holiday_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
         } else { // その日が祝日でない
             if !one_holiday_weekday_set.contains(&one_day.weekday()) { // その日が休日曜日でない
                 counter += 1; // カウンターをインクリメント
