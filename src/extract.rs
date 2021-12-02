@@ -30,6 +30,10 @@ use crate::workdays::{get_workdays};
 ///  2021-01-04T17:00:00, 2021-01-04T18:00:00, 2021-01-04T19:00:00, 2021-01-04T20:00:00, 2021-01-04T21:00:00, 2021-01-04T22:00:00,
 ///  2021-01-04T23:00:00, 2021-01-05T00:00:00, 2021-01-05T01:00:00, 2021-01-05T02:00:00, 2021-01-05T03:00:00]
 pub fn extract_workdays_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
+    if datetime_vec.len() == 0 {
+        return vec![];
+    }
+
     let mut bool_vec = vec![false;datetime_vec.len()];
     let first_date = datetime_vec.first().unwrap().date();
     let last_date = datetime_vec.last().unwrap().date();
@@ -99,6 +103,10 @@ pub fn extract_workdays_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> 
 ///  2021-01-03T10:00:00, 2021-01-03T11:00:00, 2021-01-03T13:00:00, 2021-01-03T14:00:00, 2021-01-04T09:00:00, 2021-01-04T10:00:00,
 ///  2021-01-04T11:00:00, 2021-01-04T13:00:00, 2021-01-04T14:00:00]
 pub fn extract_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
+    if datetime_vec.len() == 0 {
+        return vec![];
+    }
+
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
     let mut bool_vec = vec![false;datetime_vec.len()];
     
@@ -177,6 +185,10 @@ pub fn extract_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> 
 /// extracted workday intraday datetime: [2021-01-04T09:00:00, 2021-01-04T10:00:00, 2021-01-04T11:00:00, 2021-01-04T13:00:00,
 ///  2021-01-04T14:00:00]
 pub fn extract_workdays_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
+    if datetime_vec.len() == 0 {
+        return vec![];
+    }
+
     let mut bool_vec = vec![false;datetime_vec.len()];
     let first_date = datetime_vec.first().unwrap().date();
     let last_date = datetime_vec.last().unwrap().date();

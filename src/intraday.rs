@@ -59,34 +59,35 @@ pub fn get_next_border_workday_intraday(select_datetime: NaiveDateTime) -> (Naiv
     if check_workday(select_date) {  // 営業日の場合
         let select_time = select_datetime.time();
         if check_workday_intraday(select_datetime) { // 営業日・営業時間の場合
-            let bigger_border_ends: Vec<NaiveTime> = intraday_borders_vec.iter().cloned()
-            .filter(|x| {select_time < x.end}).map(|x| {x.end}).collect();
-            let out_time: NaiveTime = bigger_border_ends.iter().cloned().min().unwrap();
-            let out_datetime: NaiveDateTime = select_date.and_time(out_time);
+            let bigger_border_ends: Vec<NaiveTime> = intraday_borders_vec.iter()
+                .filter(|x| {select_time < x.end}).map(|x| {x.end}).collect();
+            let out_time = bigger_border_ends.iter().min().unwrap();
+            let out_datetime: NaiveDateTime = select_date.and_time(*out_time);
             return (out_datetime, "border_end");
 
         } else { // 営業時間でない場合
-            let border_starts: Vec<NaiveTime> = intraday_borders_vec.iter().cloned()
-            .map(|x| {x.start}).collect();
-            let bigger_border_starts: Vec<NaiveTime>= border_starts.iter().cloned().filter(|x| {x > &select_time}).collect();
+            let border_starts: Vec<NaiveTime> = intraday_borders_vec.iter()
+                .map(|x| {x.start}).collect();
+            let bigger_border_starts: Vec<NaiveTime> = border_starts.iter().cloned()
+                .filter(|x| {x > &select_time}).collect();
          
             if bigger_border_starts.len() > 0 { // 指定時間より遅い営業時間の開始ボーダーがある場合
-                let out_time: NaiveTime = bigger_border_starts.iter().cloned().min().unwrap();
-                let out_datetime: NaiveDateTime = select_date.and_time(out_time);
+                let out_time = bigger_border_starts.iter().min().unwrap();
+                let out_datetime: NaiveDateTime = select_date.and_time(*out_time);
                 return (out_datetime, "border_start");
             } else { // 指定時間より遅い営業時間が存在しない場合
                 let out_date: NaiveDate = get_next_workday(select_date, 1); // 次の営業日
-                let out_time: NaiveTime = border_starts.iter().cloned().min().unwrap();
-                let out_datetime: NaiveDateTime = out_date.and_time(out_time);
+                let out_time = border_starts.iter().min().unwrap();
+                let out_datetime: NaiveDateTime = out_date.and_time(*out_time);
                 return (out_datetime, "border_start");
             }
         }
     } else {  // 営業日でない場合
-        let border_starts: Vec<NaiveTime> = intraday_borders_vec.iter().cloned()
-        .map(|x| {x.start}).collect();
+        let border_starts: Vec<NaiveTime> = intraday_borders_vec.iter()
+            .map(|x| {x.start}).collect();
         let out_date: NaiveDate = get_next_workday(select_date, 1); // 次の営業日
-        let out_time: NaiveTime = border_starts.iter().cloned().min().unwrap();
-        let out_datetime: NaiveDateTime = out_date.and_time(out_time);
+        let out_time = border_starts.iter().min().unwrap();
+        let out_datetime: NaiveDateTime = out_date.and_time(*out_time);
         return (out_datetime, "border_start");
     }
 }
@@ -123,45 +124,45 @@ pub fn get_previous_border_workday_intraday(select_datetime: NaiveDateTime, forc
     let select_time = select_datetime.time();
 
     if check_workday(select_date) {  // 営業日の場合
-        let border_starts: Vec<NaiveTime> = intraday_borders_vec.iter().cloned().map(|x|{x.start}).collect();
+        let border_starts: Vec<NaiveTime> = intraday_borders_vec.iter().map(|x|{x.start}).collect();
         let is_start_border: bool = border_starts.iter().any(
             |x|{x==&select_time}
         );
         if check_workday_intraday(select_datetime) & !is_start_border { // 営業時間であり，開始境界でない場合
             let smaller_border_starts: Vec<NaiveTime> = border_starts.iter().cloned().filter(|x|{x<&select_time}).collect();
-            let out_time: NaiveTime = smaller_border_starts.iter().cloned().max().unwrap();
-            let out_datetime: NaiveDateTime = select_date.and_time(out_time);
+            let out_time = smaller_border_starts.iter().max().unwrap();
+            let out_datetime: NaiveDateTime = select_date.and_time(*out_time);
             return (out_datetime, "border_start");
         } else { // 営業時間でないか，開始境界である．
-            let border_ends: Vec<NaiveTime> = intraday_borders_vec.iter().cloned().map(|x|{x.end}).collect();
+            let border_ends: Vec<NaiveTime> = intraday_borders_vec.iter().map(|x|{x.end}).collect();
             if force_is_end {  // 終了境界で次の開始境界に行くのを強制する
                 let is_end_border: bool = border_ends.iter().any(
                     |x|{x==&select_time}
                 );
                 if is_end_border {  // 終了境界
                     let smaller_border_starts: Vec<NaiveTime> = border_starts.iter().cloned().filter(|x|{x<&select_time}).collect();
-                    let out_time: NaiveTime = smaller_border_starts.iter().cloned().max().unwrap();
-                    let out_datetime: NaiveDateTime = select_date.and_time(out_time);
+                    let out_time = smaller_border_starts.iter().max().unwrap();
+                    let out_datetime: NaiveDateTime = select_date.and_time(*out_time);
                     return (out_datetime, "border_start");
                 }
             }
             let smaller_border_ends: Vec<NaiveTime> = border_ends.iter().cloned().filter(|x|{x<=&select_time}).collect();
             if smaller_border_ends.len() > 0 {  // 指定時間より早い営業時間の終了ボーダーがある場合
-                let out_time: NaiveTime = smaller_border_ends.iter().cloned().max().unwrap();
-                let out_datetime: NaiveDateTime = select_date.and_time(out_time);
+                let out_time = smaller_border_ends.iter().max().unwrap();
+                let out_datetime: NaiveDateTime = select_date.and_time(*out_time);
                 return (out_datetime, "border_end");
             } else {  // 指定時間より早い営業時間が存在しない場合
                 let out_date: NaiveDate = get_previous_workday(select_date, 1);
-                let out_time: NaiveTime = border_ends.iter().cloned().max().unwrap();
-                let out_datetime: NaiveDateTime = out_date.and_time(out_time);
+                let out_time = border_ends.iter().max().unwrap();
+                let out_datetime: NaiveDateTime = out_date.and_time(*out_time);
                 return (out_datetime, "border_end");
             }
         }
     } else {  // 営業日でない場合
-        let border_ends: Vec<NaiveTime> = intraday_borders_vec.iter().cloned().map(|x|{x.end}).collect();
+        let border_ends: Vec<NaiveTime> = intraday_borders_vec.iter().map(|x|{x.end}).collect();
         let out_date = get_previous_workday(select_date, 1);
-        let out_time: NaiveTime = border_ends.iter().cloned().max().unwrap();
-        let out_datetime: NaiveDateTime = out_date.and_time(out_time);
+        let out_time = border_ends.iter().max().unwrap();
+        let out_datetime: NaiveDateTime = out_date.and_time(*out_time);
         return (out_datetime, "border_end");
     }
 }
@@ -425,7 +426,7 @@ pub fn get_timedelta_workdays_intraday(start_datetime: NaiveDateTime, end_dateti
     // start_dateについて
     if check_workday(start_date) {  // start_dateが営業日の場合
         if check_workday_intraday(start_datetime) {  // start_datetimeが営業時間内の場合
-            let bigger_border_ends: Vec<NaiveTime> = intraday_borders_vec.iter().cloned()
+            let bigger_border_ends: Vec<NaiveTime> = intraday_borders_vec.iter()
             .filter(|x|{x.end > start_time}).map(|x|{x.end}).collect();
             let near_border_end = bigger_border_ends.iter().min().unwrap();
             all_delta_time = all_delta_time + near_border_end.signed_duration_since(start_time);
@@ -449,7 +450,7 @@ pub fn get_timedelta_workdays_intraday(start_datetime: NaiveDateTime, end_dateti
     // end_dateについて
     if check_workday(end_date) { // end_dateが営業日の場合
         if check_workday_intraday(end_datetime) {  // end_datetimeが営業時間内の場合
-            let smaller_border_starts: Vec<NaiveTime> = intraday_borders_vec.iter().cloned()
+            let smaller_border_starts: Vec<NaiveTime> = intraday_borders_vec.iter()
             .filter(|x|{x.start <= end_time}).map(|x|{x.start}).collect();
             let near_border_start = smaller_border_starts.iter().max().unwrap();
             all_delta_time = all_delta_time + end_time.signed_duration_since(*near_border_start);

@@ -14,3 +14,6 @@ pub mod extract;
 
 /// エラー
 pub mod error;
+
+/// スクレイピング
+pub mod scrape_holidays;
