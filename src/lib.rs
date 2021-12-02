@@ -16,4 +16,5 @@ pub mod extract;
 pub mod error;
 
 /// スクレイピング
+#[cfg(not(features="wasm"))]
 pub mod scrape_holidays;

@@ -5,9 +5,6 @@ use csv::Writer;
 #[cfg(not(features="wasm"))]
 use reqwest::blocking::get;
 
-#[cfg(features="wasm")]
-use reqwest_wasm::blocking::get;
-
 use encoding_rs::SHIFT_JIS;
 use chrono::NaiveDate;
 use anyhow::Context;
