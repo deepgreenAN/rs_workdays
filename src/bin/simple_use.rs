@@ -152,12 +152,12 @@ fn main() {
 
     // 休日曜日と営業時間の変更
     let weekday_set: HashSet<Weekday> = [Weekday::Mon, Weekday::Tue].iter().cloned().collect();
-    set_one_holiday_weekday_set(weekday_set);
+    set_one_holiday_weekday_set(&weekday_set);
 
     let intraday_borders: Vec<TimeBorder> =[
         TimeBorder {start: NaiveTime::from_hms(8,0,0), end:NaiveTime::from_hms(10,0,0)}
     ].to_vec();
-    set_intraday_borders(intraday_borders);
+    set_intraday_borders(&intraday_borders);
 
     //extract_workdays_intraday_bool_vec
     let start_datetime_timestamp: i64 = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0).timestamp();
