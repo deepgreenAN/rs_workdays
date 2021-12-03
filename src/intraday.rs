@@ -1,7 +1,7 @@
 use chrono::{NaiveDate, NaiveDateTime, NaiveTime, Duration};
 
 use crate::global::{INTRADAY_BORDERS, TimeBorder};
-use crate::workdays::{check_workday, get_next_workday, get_previous_workday, get_workdays};
+use crate::workdays::{check_workday, get_next_workday, get_previous_workday, get_workdays, Closed};
 
 
 /// select_datetimeが営業日・営業時間内であるかどうかを判定
@@ -441,7 +441,7 @@ pub fn get_timedelta_workdays_intraday(start_datetime: NaiveDateTime, end_dateti
     }
 
     // 開始時刻から終了時刻までの営業日(開始・終了はふくまない)
-    let workdays = get_workdays(start_date, end_date, "both");
+    let workdays = get_workdays(start_date, end_date, Closed::Not);
 
     for _ in 0..workdays.len() {
         all_delta_time = all_delta_time + one_workday_delta_time;

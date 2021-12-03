@@ -68,7 +68,7 @@ pub static IMPOSSIBLE_DATE_2: Lazy<NaiveDate> = Lazy::new(||{ NaiveDate::from_ym
 /// - path_str_vec: csvのパス
 /// - start_year: 利用する開始年(その年の1月1日から)
 /// - end_year: 利用する終了年(その年の12月31日まで)
-pub fn set_holidays_csvs(path_str_vec: &Vec<String>, start_year: i32, end_year: i32) {
+pub fn set_holidays_csvs(path_str_vec: &Vec<String>, start_year: i32, end_year: i32) -> Result<(), Error>{
     let mut range_holidays_vec = RANGE_HOLIDAYS_VEC.write().unwrap();
     // 削除
     range_holidays_vec.clear();
@@ -76,7 +76,7 @@ pub fn set_holidays_csvs(path_str_vec: &Vec<String>, start_year: i32, end_year: 
     assert!(range_holidays_vec.is_empty());
 
     for path_str in path_str_vec.iter() {
-        let file_holiday_vec = read_csv(path_str).unwrap_or([].to_vec());
+        let file_holiday_vec = read_csv(path_str)?;
     
         // 代入
         let start_date = NaiveDate::from_ymd(start_year, 1, 1);
@@ -87,9 +87,11 @@ pub fn set_holidays_csvs(path_str_vec: &Vec<String>, start_year: i32, end_year: 
             range_holidays_vec.push(range_holiday);
         }
     }
+
+    Ok(())
 }
 
-/// 休日のベクターから休日の更新をする
+/// 祝日のベクターから祝日の更新をする
 /// # Argments
 /// - holidays_vec: 休日のベクター
 /// - start_year: 利用する開始年(その年の1月1日から)
@@ -142,4 +144,22 @@ pub fn set_intraday_borders(new_intraday_borders: &Vec<TimeBorder>) {
     for one_intraday_border in new_intraday_borders.iter().cloned(){
         intraday_borders.push(one_intraday_border);
     }
+}
+
+/// 祝日データの取得
+pub fn get_range_holidays_vec() -> Vec<NaiveDate> {
+    let range_holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
+    range_holidays_vec.iter().cloned().collect::<Vec<NaiveDate>>()
+}
+
+/// 祝日曜日データの取得
+pub fn get_holiday_weekdays() -> HashSet<Weekday> {
+    let holiday_weekdays = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    holiday_weekdays.iter().cloned().collect::<HashSet<Weekday>>()
+}
+
+/// 営業時間境界の取得
+pub fn get_intraday_borders() -> Vec<TimeBorder> {
+    let borders = INTRADAY_BORDERS.read().unwrap();
+    borders.iter().cloned().collect::<Vec<TimeBorder>>()
 }

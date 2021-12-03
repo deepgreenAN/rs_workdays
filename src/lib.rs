@@ -2,11 +2,15 @@
 
 /// 祝日・休日曜日・営業時間などの設定
 pub mod global;
+
 pub use global::{
     set_holidays_csvs, 
     set_intraday_borders, 
     set_one_holiday_weekday_set, 
-    set_range_holidays
+    set_range_holidays,
+    get_range_holidays_vec,
+    get_holiday_weekdays,
+    get_intraday_borders
 };
 
 /// 営業日の取得・チェック

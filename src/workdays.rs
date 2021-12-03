@@ -3,16 +3,29 @@ use chrono::{NaiveDate, Datelike};
 
 use crate::global::{RANGE_HOLIDAYS_VEC, ONE_HOLIDAY_WEEKDAY_SET, IMPOSSIBLE_DATE_1};
 
+/// 期間の端を含む(閉じる)かどうかを指定します
+#[derive(Debug, Clone, Copy)]
+pub enum Closed {
+    /// 左側のみを閉じます
+    Left,
+    /// 右側のみを閉じます
+    Right,
+    /// どちらも閉じません
+    Not,
+    /// どちらも閉じます
+    Both
+}
+
 
 /// start_dateからend_dateまでの営業日を取得
 /// # Argments
 /// - start_date: 開始日
 /// - end_date: 終了日
 /// - closed: 境界を含めるかどうか
-///     - 'left': 終了境界を含めない
-///     - 'right': 開始境界を含めない
-///     - 'not': どちらの境界も含める
-///     - 'both': どちらの境界も含めない
+///     - left: 終了境界を含めない
+///     - right: 開始境界を含めない
+///     - not: どちらの境界も含める
+///     - both: どちらの境界も含めない
 /// 
 /// # Returns
 /// workdays_vec: 営業日のべクター
@@ -23,7 +36,7 @@ use crate::global::{RANGE_HOLIDAYS_VEC, ONE_HOLIDAY_WEEKDAY_SET, IMPOSSIBLE_DATE
 /// use rs_workdays::workdays::*;
 /// let workday_start_date = NaiveDate::from_ymd(2021,1,1);
 /// let workday_end_date = NaiveDate::from_ymd(2021,2,1);
-/// let workdays_vec = get_workdays(workday_start_date, workday_end_date, "left");
+/// let workdays_vec = get_workdays(workday_start_date, workday_end_date, Closed::Left);
 /// println!("workdays_vec: {:?}", workdays_vec);
 /// ~~~~
 /// 
@@ -31,7 +44,7 @@ use crate::global::{RANGE_HOLIDAYS_VEC, ONE_HOLIDAY_WEEKDAY_SET, IMPOSSIBLE_DATE
 ///  2021-01-14, 2021-01-15, 2021-01-18, 2021-01-19, 2021-01-20, 2021-01-21, 2021-01-22, 2021-01-25,
 ///  2021-01-26, 2021-01-27, 2021-01-28, 2021-01-29]
 ///
-pub fn get_workdays(start_date: NaiveDate, end_date: NaiveDate, closed: &str) -> Vec<NaiveDate> {
+pub fn get_workdays(start_date: NaiveDate, end_date: NaiveDate, closed: Closed) -> Vec<NaiveDate> {
 
     let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
     let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
@@ -50,30 +63,20 @@ pub fn get_workdays(start_date: NaiveDate, end_date: NaiveDate, closed: &str) ->
     workdays_vec.sort();
 
     // 開始日と終了日の処理
-    if closed=="left" { // 開始日の重なりを許容
-        if workdays_vec.len() > 0 {
-            if workdays_vec.last().unwrap() == &end_date {
-                workdays_vec.remove(workdays_vec.len()-1);  // pop
-            }
+    match closed {
+        Closed::Left => {  // 開始日を許容
+            if workdays_vec.last().unwrap_or(&IMPOSSIBLE_DATE_1)==&end_date {workdays_vec.remove(workdays_vec.len()-1);}
+        },
+        Closed::Right => {  // 終了日を許容
+            if workdays_vec.first().unwrap_or(&IMPOSSIBLE_DATE_1)==&start_date {workdays_vec.remove(0);}            
+        },
+        Closed::Both => {  // どちらも許容
+        },
+        Closed::Not => {  // どちらも削除
+            if workdays_vec.last().unwrap_or(&IMPOSSIBLE_DATE_1)==&end_date {workdays_vec.remove(workdays_vec.len()-1);}
+            if workdays_vec.first().unwrap_or(&IMPOSSIBLE_DATE_1)==&start_date {workdays_vec.remove(0);}
         }
-    } else if closed=="right" {  // 終了日の重なりを許容
-        if workdays_vec.len() > 0 {
-            if workdays_vec.first().unwrap() == &start_date {
-                workdays_vec.remove(0);  // 最初の値を削除
-            }
-        }
-    } else if closed=="both" {  // どちらも許容しない
-        if workdays_vec.len() > 0 {
-            if workdays_vec.last().unwrap() == &end_date {
-                workdays_vec.remove(workdays_vec.len()-1);  // pop
-            }
-        }
-        if workdays_vec.len() > 0 {
-            if workdays_vec.first().unwrap() == &start_date {
-                workdays_vec.remove(0);  // 最初の値を削除
-            }
-        }
-    } // "not"などそれ以外はどちらも許容
+    }
 
     return workdays_vec;
 }

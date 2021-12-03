@@ -27,7 +27,7 @@ fn related_workdays() {
 
     let true_not_workdays_set: HashSet<NaiveDate> = all_day_set.difference(&true_workdays_set).cloned().collect();
 
-    let workdays_set: HashSet<NaiveDate> = get_workdays(start_date, end_date, "not").iter().cloned().collect();
+    let workdays_set: HashSet<NaiveDate> = get_workdays(start_date, end_date, Closed::Both).iter().cloned().collect();
     assert_eq!(workdays_set, true_workdays_set);
 
     // get_workdays_number
@@ -76,7 +76,7 @@ fn related_extract() {
     // extract_workdays_bool_vec
     let start_date = start_datetime.date();
     let end_date = end_datetime.date();
-    let all_workdays_set: HashSet<NaiveDate> = get_workdays(start_date, end_date, "not").iter().cloned().collect();
+    let all_workdays_set: HashSet<NaiveDate> = get_workdays(start_date, end_date, Closed::Both).iter().cloned().collect();
 
     let true_workdays_datetime: Vec<NaiveDateTime> = all_datetime_vec.iter().cloned()
     .filter(|x|{all_workdays_set.contains(&x.date())}).collect();

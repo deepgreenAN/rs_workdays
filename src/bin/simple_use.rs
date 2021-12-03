@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use chrono::{NaiveDate, Duration, NaiveDateTime, Weekday, NaiveTime};
 
 extern crate rs_workdays;
-use rs_workdays::workdays::{get_workdays, check_workday, get_next_workday, get_previous_workday};
+use rs_workdays::workdays::{get_workdays, check_workday, get_next_workday, get_previous_workday, Closed};
 use rs_workdays::workdays::{get_near_workday, get_next_workdays_number, get_previous_workdays_number, get_workdays_number};
 
 use rs_workdays::intraday::{check_workday_intraday, get_next_border_workday_intraday, get_previous_border_workday_intraday, get_near_workday_intraday};
@@ -23,7 +23,7 @@ fn main() {
     // get_workdays
     let workday_start_date = NaiveDate::from_ymd(2021,1,1);
     let workday_end_date = NaiveDate::from_ymd(2021,2,1);
-    let workdays_vec = get_workdays(workday_start_date, workday_end_date, "left");
+    let workdays_vec = get_workdays(workday_start_date, workday_end_date, Closed::Left);
     println!("workdays_vec: {:?}", workdays_vec);
 
     // check_workday

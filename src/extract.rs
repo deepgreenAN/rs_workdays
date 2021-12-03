@@ -1,7 +1,7 @@
 use chrono::{NaiveDateTime};
 
 use crate::global::{INTRADAY_BORDERS, IMPOSSIBLE_DATE_1};
-use crate::workdays::{get_workdays};
+use crate::workdays::{get_workdays, Closed};
 
 /// Vec<NaiveDatetime>から営業日のものをboolとして抽出
 /// # Argments
@@ -38,7 +38,7 @@ pub fn extract_workdays_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> 
     let first_date = datetime_vec.first().unwrap().date();
     let last_date = datetime_vec.last().unwrap().date();
 
-    let workdays_vec = get_workdays(first_date, last_date, "not");
+    let workdays_vec = get_workdays(first_date, last_date, Closed::Both);
     let mut workdays_iter = workdays_vec.iter();
 
     let mut one_workday = workdays_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
@@ -193,7 +193,7 @@ pub fn extract_workdays_intraday_bool_vec(datetime_vec:&Vec<NaiveDateTime>) -> V
     let first_date = datetime_vec.first().unwrap().date();
     let last_date = datetime_vec.last().unwrap().date();
 
-    let workdays_vec = get_workdays(first_date, last_date, "not");
+    let workdays_vec = get_workdays(first_date, last_date, Closed::Both);
     let mut workdays_iter = workdays_vec.iter();
 
     let mut one_workday = workdays_iter.next().unwrap_or(&IMPOSSIBLE_DATE_1);
