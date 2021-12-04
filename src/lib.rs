@@ -38,3 +38,4 @@ pub use scrape_holidays::*;
 
 /// リクエスト
 pub mod request_holidays;
+pub use request_holidays::*;
