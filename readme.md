@@ -25,7 +25,7 @@ use rs_workdays::workdays::{get_near_workday, get_next_workdays_number, get_prev
 
 use rs_workdays::intraday::{check_workday_intraday, get_next_border_workday_intraday, get_previous_border_workday_intraday};
 use rs_workdays::intraday::{add_workday_intraday_datetime, sub_workday_intraday_datetime, get_timedelta_workdays_intraday};
-use rs_workdays::extract::{extract_workdays_bool_vec, extract_intraday_bool_vec, extract_workdays_intraday_bool_vec};
+use rs_workdays::extract::{extract_workdays_bool, extract_intraday_bool, extract_workdays_intraday_bool};
 ```
 ### 指定期間の営業日を取得
 ```rust
@@ -118,7 +118,7 @@ let start_datetime_timestamp: i64 = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0)
 let add_sec: i64 = 3600; // 1時間
 let datetime_vec: Vec<NaiveDateTime> = vec![0;100].iter().cloned().enumerate()
 .map(|(i,_x)| {NaiveDateTime::from_timestamp(start_datetime_timestamp+ (i as i64) *add_sec, 0)}).collect();
-let bool_vec: Vec<bool> = extract_workdays_intraday_bool_vec(&datetime_vec);
+let bool_vec: Vec<bool> = extract_workdays_intraday_bool(&datetime_vec);
 let extracted_workdays_intraday_datetime: Vec<NaiveDateTime> = datetime_vec.iter().cloned().enumerate()
 .filter(|(i,_x)|{bool_vec[*i]}).map(|(_i,x)|{x}).collect();
 println!("extracted workday intraday datetime: {:?}", extracted_workdays_intraday_datetime);
