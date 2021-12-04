@@ -81,7 +81,7 @@ fn related_extract() {
     let true_workdays_datetime: Vec<NaiveDateTime> = all_datetime_vec.iter().cloned()
     .filter(|x|{all_workdays_set.contains(&x.date())}).collect();
 
-    let extracted_workdays_datetime_bool: Vec<bool> = extract_workdays_bool_vec(&all_datetime_vec);
+    let extracted_workdays_datetime_bool: Vec<bool> = extract_workdays_bool(&all_datetime_vec);
     let extracted_workdays_datetime: Vec<NaiveDateTime> = all_datetime_vec.iter().cloned().enumerate()
     .filter(|(i,_x)|{extracted_workdays_datetime_bool[*i]}).map(|(_i,x)|{x}).collect();
     assert_eq!(extracted_workdays_datetime, true_workdays_datetime);
@@ -94,7 +94,7 @@ fn related_extract() {
         .reduce(|a,b|{a | b}).unwrap()
     }).collect();
 
-    let extracted_intraday_datetime_bool: Vec<bool> = extract_intraday_bool_vec(&all_datetime_vec);
+    let extracted_intraday_datetime_bool: Vec<bool> = extract_intraday_bool(&all_datetime_vec);
     let extracted_intraday_datetime: Vec<NaiveDateTime> = all_datetime_vec.iter().cloned().enumerate()
     .filter(|(i,_x)|{extracted_intraday_datetime_bool[*i]}).map(|(_i,x)|{x}).collect();
     assert_eq!(extracted_intraday_datetime, true_intraday_datetime);
@@ -107,7 +107,7 @@ fn related_extract() {
         .reduce(|a,b|{a | b}).unwrap()
     }).collect();
 
-    let extracted_workdays_intraday_datetime_bool: Vec<bool> = extract_workdays_intraday_bool_vec(&all_datetime_vec);
+    let extracted_workdays_intraday_datetime_bool: Vec<bool> = extract_workdays_intraday_bool(&all_datetime_vec);
     let extracted_workdays_intraday_datetime: Vec<NaiveDateTime> = all_datetime_vec.iter().cloned().enumerate()
     .filter(|(i,_x)|{extracted_workdays_intraday_datetime_bool[*i]}).map(|(_i,x)|{x}).collect();
     assert_eq!(extracted_workdays_intraday_datetime, true_workdays_intraday_datetime);
@@ -159,7 +159,7 @@ fn related_intraday() {
         }
     }
 
-    let extracted_workdays_intraday_datetime_bool: Vec<bool> = extract_workdays_intraday_bool_vec(&all_datetime_vec);
+    let extracted_workdays_intraday_datetime_bool: Vec<bool> = extract_workdays_intraday_bool(&all_datetime_vec);
     let extracted_workdays_intraday_datetime: Vec<NaiveDateTime> = all_datetime_vec.iter().cloned().enumerate()
     .filter(|(i,_x)|{extracted_workdays_intraday_datetime_bool[*i]}).map(|(_i,x)|{x}).collect();
 

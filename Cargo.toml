@@ -11,7 +11,8 @@ name = "rs_workdays"
 
 [features]
 default = ["reqwest"]
-wasm = ["chrono/wasmbind"]
+# default = ["wasm"]
+wasm = ["chrono/wasmbind", "reqwest-wasm"]
 
 [dependencies]
 csv = "1.1"
@@ -20,4 +21,5 @@ once_cell = "1.8.0"
 thiserror = "1.0.0"
 anyhow = "1.0.51"
 reqwest = { version = "0.11", features = ["blocking"], optional=true}
+reqwest-wasm = { version = "0.11", optional=true}
 encoding_rs = "0.8"

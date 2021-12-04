@@ -41,7 +41,7 @@ fn read_csv<P:AsRef<Path>>(source_path: P) -> Result<Vec<NaiveDate>, Error> {
 // 祝日データ
 pub static RANGE_HOLIDAYS_VEC: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
     let start_date = NaiveDate::from_ymd(2016, 1, 1);
-    let end_date = NaiveDate::from_ymd(2021, 12, 31);
+    let end_date = NaiveDate::from_ymd(2025, 12, 31);
     let all_holidays_vec = read_csv("source/holidays.csv").unwrap_or([].to_vec());
     //let all_holidays_vec = [].to_vec();
     let range_holidays_vec: Vec<NaiveDate> = all_holidays_vec.iter().cloned().filter(|x| {(&start_date <= x) & (&end_date > x)}).collect(); // clonedで要素の所有権を渡していることに注意

@@ -1,7 +1,12 @@
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
-    #[error("reqest error in scraping")]
+    #[cfg(not(feature="wasm"))]
+    #[error("request error in scraping")]
     RequestError(#[from] reqwest::Error),
+
+    #[cfg(feature="wasm")]
+    #[error("request error in scraping")]
+    RequestError(#[from] reqwest_wasm::Error),
 
     #[error("error in read csv path:{path_str:?}")]
     ReadCsvError{path_str: String},

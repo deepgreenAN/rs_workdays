@@ -2,7 +2,7 @@ use std::path::Path;
 use std::fs::{create_dir_all};
 use csv::Writer;
 
-#[cfg(not(features="wasm"))]
+#[cfg(not(feature="wasm"))]
 use reqwest::blocking::get;
 
 use encoding_rs::SHIFT_JIS;
@@ -34,7 +34,7 @@ fn write_csv_file<P:AsRef<Path>>(holidays: &Vec<NaiveDate>, holiday_names: &Vec<
     Ok(())
 }
 
-pub fn make_source<P:AsRef<Path>>(source_path: P) -> Result<(), Error>{
+pub fn make_source_naikaku<P:AsRef<Path>>(source_path: P) -> Result<(), Error>{
     let url = "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv";
     let res = get(url)?;
     let res_bytes = res.bytes()?;
