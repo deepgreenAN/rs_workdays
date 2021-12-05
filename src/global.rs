@@ -42,7 +42,7 @@ fn read_csv<P:AsRef<Path>>(source_path: P) -> Result<Vec<NaiveDate>, Error> {
 
 // グローバル変数
 // 祝日データ
-pub static RANGE_HOLIDAYS_VEC: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
+pub static RANGE_HOLIDAYS: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
     let start_year = 2016_i32;
     let end_year = 2025_i32;
     let all_holidays_vec = read_csv("source/holidays.csv").unwrap_or([].to_vec());
@@ -54,7 +54,7 @@ pub static RANGE_HOLIDAYS_VEC: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
     RwLock::new(range_holidays_vec)
 });
 // 休日曜日
-pub static ONE_HOLIDAY_WEEKDAY_SET: Lazy<RwLock<HashSet<Weekday>>> = Lazy::new(|| {
+pub static HOLIDAY_WEEKDAYS: Lazy<RwLock<HashSet<Weekday>>> = Lazy::new(|| {
     RwLock::new([Weekday::Sat, Weekday::Sun].iter().cloned().collect())
 });
 // 営業時間の境界
@@ -75,7 +75,7 @@ pub static IMPOSSIBLE_DATE_2: Lazy<NaiveDate> = Lazy::new(||{ NaiveDate::from_ym
 /// - start_year: 利用する開始年(その年の1月1日から)
 /// - end_year: 利用する終了年(その年の12月31日まで)
 pub fn set_holidays_csvs(path_str_vec: &Vec<String>, start_year: i32, end_year: i32) -> Result<(), Error>{
-    let mut range_holidays_vec = RANGE_HOLIDAYS_VEC.write().unwrap();
+    let mut range_holidays_vec = RANGE_HOLIDAYS.write().unwrap();
     // 削除
     range_holidays_vec.clear();
 
@@ -105,7 +105,7 @@ pub fn set_holidays_csvs(path_str_vec: &Vec<String>, start_year: i32, end_year: 
 /// - start_year: 利用する開始年(その年の1月1日から)
 /// - end_year: 利用する終了年(その年の12月31日まで)
 pub fn set_range_holidays(holidays_vec: &Vec<NaiveDate>, start_year: i32, end_year: i32) {
-    let mut range_holidays_vec = RANGE_HOLIDAYS_VEC.write().unwrap();
+    let mut range_holidays_vec = RANGE_HOLIDAYS.write().unwrap();
     // 削除
     range_holidays_vec.clear();
     assert!(range_holidays_vec.is_empty());
@@ -130,7 +130,7 @@ pub fn set_range_holidays(holidays_vec: &Vec<NaiveDate>, start_year: i32, end_ye
 /// - start_year: 利用する開始年(その年の1月1日から)
 /// - end_year: 利用する終了年(その年の12月31日まで)
 pub fn add_range_holidays(holidays_vec: &Vec<NaiveDate>, start_year: i32, end_year: i32) {
-    let mut range_holidays_vec = RANGE_HOLIDAYS_VEC.write().unwrap();
+    let mut range_holidays_vec = RANGE_HOLIDAYS.write().unwrap();
 
     // 重複が無いようにsetを用意
     let mut range_holidays_set: HashSet<NaiveDate> = range_holidays_vec.iter().cloned().collect();
@@ -152,17 +152,17 @@ pub fn add_range_holidays(holidays_vec: &Vec<NaiveDate>, start_year: i32, end_ye
 
 /// 休日曜日の更新
 /// Argment
-/// - new_one_holiday_weekday_set: 休日曜日のセット
-pub fn set_one_holiday_weekday_set(new_one_holiday_weekday_set: &HashSet<Weekday>) {
-    let mut one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.write().unwrap();
+/// - new_holiday_weekdays: 休日曜日のセット
+pub fn set_holiday_weekdays(new_holiday_weekdays: &HashSet<Weekday>) {
+    let mut holiday_weekdays = HOLIDAY_WEEKDAYS.write().unwrap();
     // 削除
-    one_holiday_weekday_set.clear();
+    holiday_weekdays.clear();
 
-    assert!(one_holiday_weekday_set.is_empty());
+    assert!(holiday_weekdays.is_empty());
 
     // 代入
-    for one_holiday_weekday in new_one_holiday_weekday_set.iter().cloned() {
-        one_holiday_weekday_set.insert(one_holiday_weekday);
+    for holiday_weekday in new_holiday_weekdays.iter().cloned() {
+        holiday_weekdays.insert(holiday_weekday);
     }
 }
 
@@ -186,8 +186,8 @@ pub fn set_intraday_borders(new_intraday_borders: &Vec<TimeBorder>) {
 /// 祝日データの取得
 /// Return
 /// - 祝日のvec
-pub fn get_range_holidays_vec() -> Vec<NaiveDate> {
-    let range_holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
+pub fn get_range_holidays() -> Vec<NaiveDate> {
+    let range_holidays_vec = RANGE_HOLIDAYS.read().unwrap();
     range_holidays_vec.iter().cloned().collect::<Vec<NaiveDate>>()
 }
 
@@ -195,7 +195,7 @@ pub fn get_range_holidays_vec() -> Vec<NaiveDate> {
 /// Return
 /// - 休日曜日のset
 pub fn get_holiday_weekdays() -> HashSet<Weekday> {
-    let holiday_weekdays = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    let holiday_weekdays = HOLIDAY_WEEKDAYS.read().unwrap();
     holiday_weekdays.iter().cloned().collect::<HashSet<Weekday>>()
 }
 

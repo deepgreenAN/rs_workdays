@@ -6,10 +6,10 @@ pub mod global;
 pub use global::{
     set_holidays_csvs, 
     set_intraday_borders, 
-    set_one_holiday_weekday_set, 
+    set_holiday_weekdays, 
     set_range_holidays,
     add_range_holidays,
-    get_range_holidays_vec,
+    get_range_holidays,
     get_holiday_weekdays,
     get_intraday_borders
 };

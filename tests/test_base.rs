@@ -6,7 +6,7 @@ extern crate  rs_workdays;
 use rs_workdays::workdays::*;
 use rs_workdays::intraday::*;
 use rs_workdays::extract::*;
-use rs_workdays::global::{ONE_HOLIDAY_WEEKDAY_SET, INTRADAY_BORDERS};
+use rs_workdays::global::{HOLIDAY_WEEKDAYS, INTRADAY_BORDERS};
 
 mod test_global;
 use test_global::{true_holidays_2021};
@@ -14,7 +14,7 @@ use test_global::{true_holidays_2021};
 #[test]
 fn related_workdays() {
     // get_workdays
-    let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    let one_holiday_weekday_set = HOLIDAY_WEEKDAYS.read().unwrap();
     let start_date = NaiveDate::from_ymd(2021, 1, 1);
     let end_date = NaiveDate::from_ymd(2021, 12, 31);
     let all_day_set: HashSet<NaiveDate> = start_date.iter_days()

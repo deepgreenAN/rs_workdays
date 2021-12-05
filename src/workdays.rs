@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use chrono::{NaiveDate, Datelike};
 
-use crate::global::{RANGE_HOLIDAYS_VEC, ONE_HOLIDAY_WEEKDAY_SET, IMPOSSIBLE_DATE_1};
+use crate::global::{RANGE_HOLIDAYS, HOLIDAY_WEEKDAYS, IMPOSSIBLE_DATE_1};
 
 /// 期間の端を含む(閉じる)かどうかを指定する
 #[derive(Debug, Clone, Copy)]
@@ -46,8 +46,8 @@ pub enum Closed {
 ///
 pub fn get_workdays(start_date: NaiveDate, end_date: NaiveDate, closed: Closed) -> Vec<NaiveDate> {
 
-    let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
-    let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    let holidays_vec = RANGE_HOLIDAYS.read().unwrap();
+    let one_holiday_weekday_set = HOLIDAY_WEEKDAYS.read().unwrap();
 
     let all_day_set: HashSet<NaiveDate> = start_date.iter_days()
     .take_while(|x| {x<=&end_date}).collect();  // 全ての日
@@ -97,8 +97,8 @@ pub fn get_workdays(start_date: NaiveDate, end_date: NaiveDate, closed: Closed) 
 /// assert!(!is_workday);
 /// ~~~~
 pub fn check_workday(select_date: NaiveDate) -> bool {
-    let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
-    let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    let holidays_vec = RANGE_HOLIDAYS.read().unwrap();
+    let one_holiday_weekday_set = HOLIDAY_WEEKDAYS.read().unwrap();
 
     let holidays_set: HashSet<NaiveDate> = holidays_vec.iter().cloned().collect();
     let is_holiday: bool = holidays_set.contains(&select_date);
@@ -123,8 +123,8 @@ pub fn check_workday(select_date: NaiveDate) -> bool {
 /// assert_eq!(next_workday, NaiveDate::from_ymd(2021,01,12));
 /// ~~~~
 pub fn get_next_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
-    let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
-    let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    let holidays_vec = RANGE_HOLIDAYS.read().unwrap();
+    let one_holiday_weekday_set = HOLIDAY_WEEKDAYS.read().unwrap();
     
     let holidays_bigger_select: Vec<NaiveDate> = holidays_vec.iter().cloned().filter(|x| {x >= &select_date}).collect();
 
@@ -181,8 +181,8 @@ pub fn get_next_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
 /// assert_eq!(previous_workday, NaiveDate::from_ymd(2020,12,31));
 /// ~~~~
 pub fn get_previous_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
-    let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
-    let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    let holidays_vec = RANGE_HOLIDAYS.read().unwrap();
+    let one_holiday_weekday_set = HOLIDAY_WEEKDAYS.read().unwrap();
 
     let mut holidays_smaller_select: Vec<NaiveDate> = holidays_vec.iter().cloned().filter(|x| {x <= &select_date}).collect();
     holidays_smaller_select.reverse();
@@ -275,8 +275,8 @@ pub fn get_near_workday(select_date: NaiveDate, is_after: bool) -> NaiveDate{
 ///  2021-01-14, 2021-01-15, 2021-01-18, 2021-01-19, 2021-01-20, 2021-01-21, 2021-01-22, 2021-01-25,
 ///  2021-01-26, 2021-01-27, 2021-01-28, 2021-01-29]
 pub fn get_next_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDate>{
-    let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
-    let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    let holidays_vec = RANGE_HOLIDAYS.read().unwrap();
+    let one_holiday_weekday_set = HOLIDAY_WEEKDAYS.read().unwrap();
     
     let holidays_bigger_select: Vec<NaiveDate> = holidays_vec.iter().cloned().filter(|x| {x >= &start_date}).collect();
 
@@ -335,8 +335,8 @@ pub fn get_next_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDa
 ///  2021-01-14, 2021-01-15, 2021-01-18, 2021-01-19, 2021-01-20, 2021-01-21, 2021-01-22, 2021-01-25,
 ///  2021-01-26, 2021-01-27, 2021-01-28, 2021-01-29]
 pub fn get_previous_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDate>{
-    let holidays_vec = RANGE_HOLIDAYS_VEC.read().unwrap();
-    let one_holiday_weekday_set = ONE_HOLIDAY_WEEKDAY_SET.read().unwrap();
+    let holidays_vec = RANGE_HOLIDAYS.read().unwrap();
+    let one_holiday_weekday_set = HOLIDAY_WEEKDAYS.read().unwrap();
 
     let mut holidays_smaller_select: Vec<NaiveDate> = holidays_vec.iter().cloned().filter(|x| {x <= &start_date}).collect();
     holidays_smaller_select.reverse();

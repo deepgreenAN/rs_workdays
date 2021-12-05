@@ -11,7 +11,7 @@ use rs_workdays::intraday::{add_workday_intraday_datetime, sub_workday_intraday_
 use rs_workdays::extract::{extract_workdays_bool, extract_intraday_bool, extract_workdays_intraday_bool};
 
 //use rs_workdays::global::{set_holidays_csv};
-use rs_workdays::global::{set_one_holiday_weekday_set, set_intraday_borders, TimeBorder};
+use rs_workdays::global::{set_holiday_weekdays, set_intraday_borders, TimeBorder};
 
 fn main() {
     println!("program start");
@@ -152,7 +152,7 @@ fn main() {
 
     // 休日曜日と営業時間の変更
     let weekday_set: HashSet<Weekday> = [Weekday::Mon, Weekday::Tue].iter().cloned().collect();
-    set_one_holiday_weekday_set(&weekday_set);
+    set_holiday_weekdays(&weekday_set);
 
     let intraday_borders: Vec<TimeBorder> =[
         TimeBorder {start: NaiveTime::from_hms(8,0,0), end:NaiveTime::from_hms(10,0,0)}
