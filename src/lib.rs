@@ -8,6 +8,7 @@ pub use global::{
     set_intraday_borders, 
     set_one_holiday_weekday_set, 
     set_range_holidays,
+    add_range_holidays,
     get_range_holidays_vec,
     get_holiday_weekdays,
     get_intraday_borders
