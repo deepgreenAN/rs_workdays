@@ -10,6 +10,11 @@ use chrono::NaiveDate;
 use anyhow::Context;
 use crate::error::Error;
 
+/// 指定したパスにcsvファイルを保存
+/// Argments
+/// - holidays: 祝日データ
+/// - holiday_names: 祝日名データ
+/// - source_path: 保存パス
 fn write_csv_file<P:AsRef<Path>>(holidays: &Vec<NaiveDate>, holiday_names: &Vec<String>, source_path: P) -> Result<(), Error>{
     let source_path: &Path = source_path.as_ref();
     let source_path_str = source_path.to_str().context("cannot convert source path to string")?;
@@ -34,6 +39,9 @@ fn write_csv_file<P:AsRef<Path>>(holidays: &Vec<NaiveDate>, holiday_names: &Vec<
     Ok(())
 }
 
+/// 内閣府のデータを指定したパスにソースとして保存
+/// Argment
+/// - source_path: 保存するcsvのパス
 pub fn make_source_naikaku<P:AsRef<Path>>(source_path: P) -> Result<(), Error>{
     let url = "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv";
     let res = get(url)?;

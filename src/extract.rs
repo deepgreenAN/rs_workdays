@@ -4,10 +4,10 @@ use crate::global::{INTRADAY_BORDERS, IMPOSSIBLE_DATE_1};
 use crate::workdays::{get_workdays, Closed};
 
 /// Vec<NaiveDatetime>から営業日のものをboolとして抽出
-/// # Argments
+/// Argment
 /// - datetime_vec: 抽出したい日時のベクター
 /// 
-/// # Returns
+/// Return
 /// ブールのベクター
 /// 
 /// # Examples
@@ -78,10 +78,10 @@ pub fn extract_workdays_bool(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
 }
 
 /// Vec<NaiveDatetime>から営業時間のものをboolとして抽出
-/// # Argments
+/// Argment
 /// - datetime_vec: 抽出したい日時のベクター
 /// 
-/// # Returns
+/// Return
 /// ブールのベクター
 /// 
 /// # Examples
@@ -162,10 +162,10 @@ pub fn extract_intraday_bool(datetime_vec:&Vec<NaiveDateTime>) -> Vec<bool> {
 }
 
 /// Vec<NaiveDatetime>から営業日・営業時間のものをboolとして抽出
-/// # Argments
+/// Argment
 /// - datetime_vec: 抽出したい日時のベクター
 /// 
-/// # Returns
+/// Return
 /// ブールのベクター
 /// 
 /// # Examples

@@ -4,11 +4,11 @@ use crate::global::{INTRADAY_BORDERS, TimeBorder};
 use crate::workdays::{check_workday, get_next_workday, get_previous_workday, get_workdays, Closed};
 
 
-/// select_datetimeが営業日・営業時間内であるかどうかを判定
-/// # Argments
+/// select_datetimeが営業日・営業時間内であるかどうかを判定  
+/// Argment
 /// - select_datetime: 指定する日時
 /// 
-/// # Returns
+/// Return
 /// 営業日・営業時間内であるかどうか
 /// 
 /// # Examples
@@ -35,10 +35,10 @@ pub fn check_workday_intraday(select_datetime: NaiveDateTime) -> bool {
 }
 
 /// 次の営業日・営業時間内のdatetimeをその状態とともに取得
-/// # Argments
+/// Argment
 /// - select_datetime: 指定する日時
 /// 
-/// # Returns
+/// Returns
 /// - out_datetime: 次の営業日・営業時間内のdatetime
 /// - 状態を示す文字列
 ///     - 'border_start': 営業時間の開始
@@ -93,10 +93,10 @@ pub fn get_next_border_workday_intraday(select_datetime: NaiveDateTime) -> (Naiv
 }
 
 /// 前の営業日・営業時間内のdatetimeをその状態とともに取得
-/// # Argments
+/// Argment
 /// - select_datetime: 指定する日時
 /// 
-/// # Returns
+/// Returns
 /// - out_datetime: 前の営業日・営業時間内のdatetime
 /// - 状態を示す文字列
 ///     - 'border_start': 営業時間の開始
@@ -168,11 +168,11 @@ pub fn get_previous_border_workday_intraday(select_datetime: NaiveDateTime, forc
 }
 
 /// 最近の営業日・営業時間内のdatetimeをその状態とともに取得．select_datetimeが営業日・営業時間内の場合そのまま返る．
-/// # Argments
+/// Argments
 /// - select_datetime: 指定する日時
 /// - is_after: 後ろを探索するかどうか
 /// 
-/// # Returns
+/// Returns
 /// - out_datetime: 前の営業日・営業時間内のdatetime
 /// - 状態を示す文字列
 ///     - 'border_intra': 営業時間内
@@ -208,11 +208,11 @@ pub fn get_near_workday_intraday(select_datetime: NaiveDateTime, is_after:bool) 
 }
 
 /// 営業日・営業時間を考慮しDateTimeを加算する．
-/// # Argments
+/// Argments
 /// - select_datetime: 指定する日時
 /// - dela_time: 加算するDuration
 /// 
-/// # Returns
+/// Return
 /// 加算された日時
 /// 
 /// # Examples
@@ -309,11 +309,11 @@ pub fn add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time:
 }
 
 /// 営業日・営業時間を考慮しDateTimeを減算する．
-/// # Argments
+/// Argments
 /// - select_datetime: 指定する日時
 /// - dela_time: 加算するDuration
 /// 
-/// # Returns
+/// Return
 /// 減算された日時
 /// 
 /// # Examples
@@ -391,11 +391,11 @@ pub fn sub_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time:
 }
 
 /// start_datetimeからend_datetimeの営業日・営業時間を取得
-/// # Argments
+/// Argments
 /// - start_datetime: 開始日時
 /// - end_datetime: 終了日時
 /// 
-/// # Returns
+/// Return
 /// 営業日・営業時間のDuration
 /// 
 /// # Examples

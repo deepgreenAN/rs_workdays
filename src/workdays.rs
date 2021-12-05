@@ -3,22 +3,22 @@ use chrono::{NaiveDate, Datelike};
 
 use crate::global::{RANGE_HOLIDAYS_VEC, ONE_HOLIDAY_WEEKDAY_SET, IMPOSSIBLE_DATE_1};
 
-/// 期間の端を含む(閉じる)かどうかを指定します
+/// 期間の端を含む(閉じる)かどうかを指定する
 #[derive(Debug, Clone, Copy)]
 pub enum Closed {
-    /// 左側のみを閉じます
+    /// 左側のみを閉じる
     Left,
-    /// 右側のみを閉じます
+    /// 右側のみを閉じる
     Right,
-    /// どちらも閉じません
+    /// どちらも閉じない
     Not,
-    /// どちらも閉じます
+    /// どちらも閉じる
     Both
 }
 
 
-/// start_dateからend_dateまでの営業日を取得
-/// # Argments
+/// start_dateからend_dateまでの営業日を取得  
+/// Argments
 /// - start_date: 開始日
 /// - end_date: 終了日
 /// - closed: 境界を含めるかどうか
@@ -27,7 +27,7 @@ pub enum Closed {
 ///     - not: どちらの境界も含める
 ///     - both: どちらの境界も含めない
 /// 
-/// # Returns
+/// Return  
 /// workdays_vec: 営業日のべクター
 /// 
 /// # Example
@@ -82,10 +82,10 @@ pub fn get_workdays(start_date: NaiveDate, end_date: NaiveDate, closed: Closed) 
 }
 
 /// select_dateが営業日であるか判定
-/// # Argments
+/// Argment
 /// - select_date: 指定する日
 /// 
-/// # Returns
+/// Return
 /// 営業日であるかどうか
 /// 
 /// # Example
@@ -107,11 +107,11 @@ pub fn check_workday(select_date: NaiveDate) -> bool {
 }
 
 /// select_dateからdays分の次の営業日を取得
-/// # Argments
+/// Argments
 /// - select_date: 指定する日
 /// - days: 進める日数
 /// 
-/// # Returns
+/// Return
 /// one_day: 次の営業日
 /// 
 /// # Example
@@ -165,11 +165,11 @@ pub fn get_next_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
 }
 
 /// select_dateからdays分の前の営業日を取得
-/// # Argments
+/// Argment
 /// - select_date: 指定する日
 /// - days: 減らす日数
 /// 
-/// # Returns
+/// Return
 /// one_day: 前の営業日
 /// 
 /// # Example
@@ -223,11 +223,11 @@ pub fn get_previous_workday(select_date: NaiveDate, days: i32) -> NaiveDate {
 }
 
 /// 最近の営業日を取得
-/// # Argments
+/// Argments
 /// - select_date: 指定する日
 /// - is_after: 後の営業日を所得するかどうか
 /// 
-/// # Returns
+/// Return
 /// 最近の営業日
 /// 
 /// # Examples
@@ -255,11 +255,11 @@ pub fn get_near_workday(select_date: NaiveDate, is_after: bool) -> NaiveDate{
 }
 
 /// start_dateからdays分だけ後ろの営業日のベクターを取得
-/// # Argments
+/// Argments
 /// - start_date: 開始日
 /// - days: 日数
 /// 
-/// # Returns
+/// Return
 /// workdays_vec: 営業日のベクター
 /// 
 /// # Examples
@@ -314,11 +314,11 @@ pub fn get_next_workdays_number(start_date: NaiveDate, days: i32) -> Vec<NaiveDa
 }
 
 /// start_dateからdays分だけ前の営業日のベクターを取得
-/// # Argments
+/// Argments
 /// - start_date: 開始日
 /// - days: 日数
 /// 
-/// # Returns
+/// Return
 /// workdays_vec: 営業日のベクター
 /// 
 /// # Examples
@@ -374,11 +374,11 @@ pub fn get_previous_workdays_number(start_date: NaiveDate, days: i32) -> Vec<Nai
 }
 
 /// start_dateからdays分だけの営業日のベクターを取得
-/// # Argments
+/// Argments
 /// - start_date: 開始日
 /// - days: 日数
 /// 
-/// # Returns
+/// Return
 /// workdays_vec: 営業日のベクター
 /// 
 /// # Examples

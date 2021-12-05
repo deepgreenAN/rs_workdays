@@ -5,7 +5,7 @@ use crate::global::set_range_holidays;
 use crate::error::Error;
 
 /// 内閣府による祝日データを取得して祝日に設定する(同期)(feature!="wasm")
-/// Argments
+/// Argments  
 /// - start_year: 利用範囲の開始年
 /// - end_year: 利用範囲の終了年
 #[cfg(not(feature="wasm"))]
@@ -32,7 +32,7 @@ pub fn request_holidays_naikaku(start_year: i32, end_year: i32) -> Result<(), Er
 }
 
 /// 内閣府による祝日データを取得して祝日に設定する(非同期)(feature="wasm")
-/// Argments
+/// Argments  
 /// - start_year: 利用範囲の開始年
 /// - end_year: 利用範囲の終了年
 #[cfg(feature="wasm")]
