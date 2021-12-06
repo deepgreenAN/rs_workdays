@@ -177,7 +177,7 @@ fn related_intraday() {
 
     for i in 1..extracted_workdays_intraday_datetime.len()+1 {
         subed_workday_intraday_datetime.push(
-            sub_workday_intraday_datetime(end_datetime, Duration::seconds(i as i64 * per_sec))
+            add_workday_intraday_datetime(end_datetime, - Duration::seconds(i as i64 * per_sec))
         );
     }
     let subed_workday_intraday_datetime: Vec<NaiveDateTime> = subed_workday_intraday_datetime.iter().cloned().rev().collect();
@@ -188,5 +188,5 @@ fn related_intraday() {
     let end_datetime = NaiveDate::from_ymd(2021, 12, 31).and_hms(9, 0, 0);
     let delta_time = get_timedelta_workdays_intraday(start_datetime, end_datetime);
     assert_eq!(add_workday_intraday_datetime(start_datetime, delta_time), end_datetime);
-    assert_eq!(sub_workday_intraday_datetime(end_datetime, delta_time), start_datetime);
+    assert_eq!(add_workday_intraday_datetime(end_datetime, - delta_time), start_datetime);
 }

@@ -7,7 +7,7 @@ use rs_workdays::workdays::{get_workdays, check_workday, get_next_workday, get_p
 use rs_workdays::workdays::{get_near_workday, get_next_workdays_number, get_previous_workdays_number, get_workdays_number};
 
 use rs_workdays::intraday::{check_workday_intraday, get_next_border_workday_intraday, get_previous_border_workday_intraday, get_near_workday_intraday};
-use rs_workdays::intraday::{add_workday_intraday_datetime, sub_workday_intraday_datetime, get_timedelta_workdays_intraday};
+use rs_workdays::intraday::{add_workday_intraday_datetime, get_timedelta_workdays_intraday};
 use rs_workdays::extract::{extract_workdays_bool, extract_intraday_bool, extract_workdays_intraday_bool};
 
 //use rs_workdays::global::{set_holidays_csv};
@@ -110,8 +110,8 @@ fn main() {
     println!("add_workday_intraday_datetime: {:?} + {:?} = {:?}", select_datetime, add_duration, added_workday_intraday_datetime);
 
     let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
-    let sub_duration = Duration::hours(2);
-    let subed_workday_intraday_datetime = sub_workday_intraday_datetime(select_datetime, sub_duration);
+    let sub_duration =  - Duration::hours(2);
+    let subed_workday_intraday_datetime = add_workday_intraday_datetime(select_datetime, sub_duration);
     println!("sub_workday_intraday_datetime: {:?} + {:?} = {:?}", select_datetime, sub_duration, subed_workday_intraday_datetime);
 
     //get_timedelta_workdays_intraday

@@ -210,21 +210,11 @@ pub fn get_near_workday_intraday(select_datetime: NaiveDateTime, is_after:bool) 
 /// 営業日・営業時間を考慮しDateTimeを加算する．
 /// Argments
 /// - select_datetime: 指定する日時
-/// - dela_time: 加算するDuration
+/// - dela_time: 加算するDuration(>0)
 /// 
 /// Return
 /// 加算された日時
-/// 
-/// # Examples
-/// ~~~~
-/// use chrono::{NaiveDate, Duration};
-/// use rs_workdays::intraday::*;
-/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
-/// let add_duration = Duration::hours(2);
-/// let added_workday_intraday_datetime = add_workday_intraday_datetime(select_datetime, add_duration);
-/// assert_eq!(added_workday_intraday_datetime, NaiveDate::from_ymd(2021,1,4).and_hms(11,0,0));
-/// ~~~~
-pub fn add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
+fn _add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
     let mut all_delta_time = delta_time;
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
 
@@ -311,21 +301,11 @@ pub fn add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time:
 /// 営業日・営業時間を考慮しDateTimeを減算する．
 /// Argments
 /// - select_datetime: 指定する日時
-/// - dela_time: 加算するDuration
+/// - dela_time: 加算するDuration>0
 /// 
 /// Return
 /// 減算された日時
-/// 
-/// # Examples
-/// ~~~~
-/// use chrono::{NaiveDate, Duration};
-/// use rs_workdays::intraday::*;
-/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
-/// let sub_duration = Duration::hours(2);
-/// let subed_workday_intraday_datetime = sub_workday_intraday_datetime(select_datetime, sub_duration);
-/// assert_eq!(subed_workday_intraday_datetime, NaiveDate::from_ymd(2020,12,31).and_hms(13,0,0));
-/// ~~~~
-pub fn sub_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
+fn _sub_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
     let mut all_delta_time = delta_time;
     let intraday_borders_vec = INTRADAY_BORDERS.read().unwrap();
 
@@ -389,6 +369,37 @@ pub fn sub_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time:
 
     return select_datetime;  // 計算に失敗している
 }
+
+/// 営業日・営業時間を考慮しDateTimeを加算する．
+/// Argments
+/// - select_datetime: 指定する日時
+/// - dela_time: 加算するDuration
+/// 
+/// Return
+/// 加算された日時
+/// 
+/// # Examples
+/// ~~~~
+/// use chrono::{NaiveDate, Duration};
+/// use rs_workdays::intraday::*;
+/// let select_datetime = NaiveDate::from_ymd(2021,1,1).and_hms(0,0,0);
+/// let add_duration = Duration::hours(2);
+/// let added_workday_intraday_datetime = add_workday_intraday_datetime(select_datetime, add_duration);
+/// assert_eq!(added_workday_intraday_datetime, NaiveDate::from_ymd(2021,1,4).and_hms(11,0,0));
+/// let sub_duration = - Duration::hours(2);
+/// let subed_workday_intraday_datetime = add_workday_intraday_datetime(select_datetime, sub_duration);
+/// assert_eq!(subed_workday_intraday_datetime, NaiveDate::from_ymd(2020,12,31).and_hms(13,0,0));
+/// ~~~~
+pub fn add_workday_intraday_datetime(select_datetime: NaiveDateTime, delta_time: Duration) -> NaiveDateTime {
+    if delta_time.num_milliseconds() > 0 {
+        return _add_workday_intraday_datetime(select_datetime, delta_time);
+    } else if delta_time.num_milliseconds() < 0 {
+        return _sub_workday_intraday_datetime(select_datetime, - delta_time);
+    } else {  // mmsec以下は無視
+        return select_datetime;
+    }
+}
+
 
 /// start_datetimeからend_datetimeの営業日・営業時間を取得
 /// Argments
