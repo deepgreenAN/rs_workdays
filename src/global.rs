@@ -10,11 +10,13 @@ use crate::error::Error;
 /// Fields
 /// - start: 開始時間
 /// - end: 終了時間
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct TimeBorder {
     pub start: NaiveTime,
     pub end: NaiveTime
 }
+
+
 
 /// csvを読み込んで祝日のVecにする
 /// Argment
@@ -181,6 +183,7 @@ pub fn set_intraday_borders(new_intraday_borders: &Vec<TimeBorder>) {
     for one_intraday_border in new_intraday_borders.iter().cloned(){
         intraday_borders.push(one_intraday_border);
     }
+    intraday_borders.sort();
 }
 
 /// 祝日データの取得
