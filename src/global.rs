@@ -49,7 +49,7 @@ pub static RANGE_HOLIDAYS: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
     let end_year = 2025_i32;
     let all_holidays_vec = read_csv("source/holidays.csv").unwrap_or([].to_vec());
     let range_holidays_set: HashSet<NaiveDate> = all_holidays_vec.into_iter().filter(|x| {
-        (start_year <= x.year()) & (end_year > x.year())
+        (start_year <= x.year()) & (end_year >= x.year())
     }).collect();  // setにして重複を削除
     let mut range_holidays_vec: Vec<NaiveDate> = range_holidays_set.into_iter().collect();
     range_holidays_vec.sort();
@@ -90,7 +90,7 @@ pub fn set_holidays_csvs(path_str_vec: &Vec<String>, start_year: i32, end_year: 
         let file_holiday_vec = read_csv(path_str)?;
     
         let made_range_holidays_vec: Vec<NaiveDate> = file_holiday_vec.into_iter().filter(|holiday| {
-            (start_year <= holiday.year()) & (end_year > holiday.year())
+            (start_year <= holiday.year()) & (end_year >= holiday.year())
         }).collect();
         made_range_holidays_vec.into_iter().for_each(|range_holiday|{ range_holidays_set.insert(range_holiday); });
     }
