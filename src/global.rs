@@ -28,7 +28,7 @@ fn read_csv<P:AsRef<Path>>(source_path: P) -> Result<Vec<NaiveDate>, Error> {
     let parse_from_str = NaiveDate::parse_from_str;
     let mut holiday_vec: Vec<NaiveDate> = Vec::new();
 
-    let mut rdr = csv::Reader::from_path(source_path)
+    let mut rdr = csv::ReaderBuilder::new().has_headers(false).from_path(source_path)
         .map_err(|_|{Error::ReadCsvError{path_str: source_path_str.to_string()}})?;
     for result in rdr.records() {
         let record = result

@@ -48,7 +48,7 @@ pub fn make_source_naikaku<P:AsRef<Path>>(source_path: P) -> Result<(), Error>{
     let res_bytes = res.bytes()?;
 
     let (decoded_content, _, _) = SHIFT_JIS.decode(&res_bytes);
-    let mut rdr = csv::Reader::from_reader(decoded_content.as_bytes());
+    let mut rdr = csv::ReaderBuilder::new().has_headers(false).from_reader(decoded_content.as_bytes());
 
     let mut holidays: Vec<NaiveDate> = Vec::new();
     let mut holiday_names: Vec<String> = Vec::new();
