@@ -15,7 +15,7 @@ pub fn request_holidays_naikaku(start_year: i32, end_year: i32) -> Result<(), Er
     let res_bytes = res.bytes()?;
 
     let (decoded_content, _, _) = SHIFT_JIS.decode(&res_bytes);
-    let mut rdr = csv::ReaderBuilder::new().has_headers(false).from_reader(decoded_content.as_bytes());
+    let mut rdr = csv::ReaderBuilder::new().has_headers(true).from_reader(decoded_content.as_bytes());
 
     let mut holidays: Vec<NaiveDate> = Vec::new();
 
@@ -42,7 +42,7 @@ pub async fn request_holidays_naikaku(start_year: i32, end_year: i32) -> Result<
     let res_bytes = res.bytes().await?;
 
     let (decoded_content, _, _) = SHIFT_JIS.decode(&res_bytes);
-    let mut rdr = csv::ReaderBuilder::new().has_headers(false).from_reader(decoded_content.as_bytes());
+    let mut rdr = csv::ReaderBuilder::new().has_headers(true).from_reader(decoded_content.as_bytes());
 
     let mut holidays: Vec<NaiveDate> = Vec::new();
 
