@@ -1,5 +1,4 @@
 use chrono::NaiveDate;
-use encoding_rs::SHIFT_JIS;
 
 use crate::global::set_range_holidays;
 use crate::error::Error;
@@ -8,13 +7,13 @@ use crate::error::Error;
 /// Argments  
 /// - start_year: 利用範囲の開始年
 /// - end_year: 利用範囲の終了年
-#[cfg(not(feature="wasm"))]
+#[cfg(feature = "source")]
 pub fn request_holidays_naikaku(start_year: i32, end_year: i32) -> Result<(), Error>{
     let url = "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv";
     let res = reqwest::blocking::get(url)?;
     let res_bytes = res.bytes()?;
 
-    let (decoded_content, _, _) = SHIFT_JIS.decode(&res_bytes);
+    let (decoded_content, _, _) = encoding_rs::SHIFT_JIS.decode(&res_bytes);
     let mut rdr = csv::ReaderBuilder::new().has_headers(true).from_reader(decoded_content.as_bytes());
 
     let mut holidays: Vec<NaiveDate> = Vec::new();
@@ -35,13 +34,13 @@ pub fn request_holidays_naikaku(start_year: i32, end_year: i32) -> Result<(), Er
 /// Argments  
 /// - start_year: 利用範囲の開始年
 /// - end_year: 利用範囲の終了年
-#[cfg(feature="wasm")]
+#[cfg(feature = "wasm_source")]
 pub async fn request_holidays_naikaku(start_year: i32, end_year: i32) -> Result<(), Error>{
     let url = "https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv";
     let res = reqwest_wasm::get(url).await?;
     let res_bytes = res.bytes().await?;
 
-    let (decoded_content, _, _) = SHIFT_JIS.decode(&res_bytes);
+    let (decoded_content, _, _) = encoding_rs::SHIFT_JIS.decode(&res_bytes);
     let mut rdr = csv::ReaderBuilder::new().has_headers(true).from_reader(decoded_content.as_bytes());
 
     let mut holidays: Vec<NaiveDate> = Vec::new();

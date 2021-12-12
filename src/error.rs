@@ -1,10 +1,10 @@
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
-    #[cfg(not(feature="wasm"))]
+    #[cfg(feature="source")]
     #[error("request error in scraping")]
     RequestError(#[from] reqwest::Error),
 
-    #[cfg(feature="wasm")]
+    #[cfg(feature="wasm_source")]
     #[error("request error in scraping")]
     RequestError(#[from] reqwest_wasm::Error),
 

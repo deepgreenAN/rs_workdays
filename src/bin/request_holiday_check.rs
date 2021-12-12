@@ -3,14 +3,15 @@ use chrono::NaiveDate;
 extern crate rs_workdays;
 
 
-#[cfg(not(feature="wasm"))]
+#[cfg(feature = "source")]
 use rs_workdays::request_holidays::request_holidays_naikaku;
 
 use rs_workdays::{get_workdays, Closed};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    if !cfg!(feature="wasm") {
-        #[cfg(not(feature="wasm"))]
+    if cfg!(feature="source") | cfg!(feature="wasm_source") {
+
+        #[cfg(feature = "source")]
         request_holidays_naikaku(2016_i32, 2025_i32)?;
 
         let workday_start_date = NaiveDate::from_ymd(2021,1,1);

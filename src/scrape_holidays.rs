@@ -2,7 +2,6 @@ use std::path::Path;
 use std::fs::{create_dir_all};
 use csv::Writer;
 
-#[cfg(not(feature="wasm"))]
 use reqwest::blocking::get;
 
 use encoding_rs::SHIFT_JIS;

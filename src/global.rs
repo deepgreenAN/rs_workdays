@@ -3,7 +3,10 @@ use std::path::Path;
 use std::collections::HashSet;
 use chrono::{NaiveDate, Datelike, Weekday, NaiveTime};
 use once_cell::sync::Lazy;
+
+#[cfg(feature = "source")]
 use anyhow::Context;
+
 use crate::error::Error;
 
 /// 営業時間の境界
@@ -21,6 +24,7 @@ pub struct TimeBorder {
 /// csvを読み込んで祝日のVecにする
 /// Argment
 /// - path_str: csvファイルのパス
+#[cfg(feature = "source")]
 fn read_csv<P:AsRef<Path>>(source_path: P) -> Result<Vec<NaiveDate>, Error> {
     let source_path: &Path = source_path.as_ref();
     let source_path_str = source_path.to_str().context("cannot convert source path to string")?;
@@ -42,12 +46,19 @@ fn read_csv<P:AsRef<Path>>(source_path: P) -> Result<Vec<NaiveDate>, Error> {
 }
 
 
+#[cfg(not(feature = "source"))]
+fn read_csv<P:AsRef<Path>>(_: P) -> Result<Vec<NaiveDate>, Error> {
+    Ok([].to_vec())
+}
+
 // グローバル変数
 // 祝日データ
 pub static RANGE_HOLIDAYS: Lazy<RwLock<Vec<NaiveDate>>> = Lazy::new(|| {
     let start_year = 2016_i32;
     let end_year = 2025_i32;
+
     let all_holidays_vec = read_csv("source/holidays.csv").unwrap_or([].to_vec());
+    
     let range_holidays_set: HashSet<NaiveDate> = all_holidays_vec.into_iter().filter(|x| {
         (start_year <= x.year()) & (end_year >= x.year())
     }).collect();  // setにして重複を削除

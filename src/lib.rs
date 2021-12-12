@@ -31,12 +31,15 @@ pub mod error;
 pub use error::Error;
 
 /// スクレイピング
-#[cfg(not(feature="wasm"))]
+#[cfg(feature="source")]
 pub mod scrape_holidays;
 
-#[cfg(not(feature="wasm"))]
+#[cfg(feature="source")]
 pub use scrape_holidays::*;
 
 /// リクエスト
+#[cfg(any(feature="source", feature="wasm_source"))]
 pub mod request_holidays;
+
+#[cfg(any(feature="source", feature="wasm_source"))]
 pub use request_holidays::*;
