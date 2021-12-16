@@ -127,7 +127,7 @@ pub fn set_range_holidays(holidays_vec: &Vec<NaiveDate>, start_year: i32, end_ye
     let mut range_holidays_set: HashSet<NaiveDate> = HashSet::new();
 
     let made_range_holidays_vec: Vec<NaiveDate> = holidays_vec.iter().cloned().filter(|holiday| {
-        (start_year <= holiday.year()) & (end_year > holiday.year())
+        (start_year <= holiday.year()) & (end_year >= holiday.year())
     }).collect();
 
     made_range_holidays_vec.into_iter().for_each(|range_holiday|{ range_holidays_set.insert(range_holiday); });
@@ -149,7 +149,7 @@ pub fn add_range_holidays(holidays_vec: &Vec<NaiveDate>, start_year: i32, end_ye
     let mut range_holidays_set: HashSet<NaiveDate> = range_holidays_vec.iter().cloned().collect();
 
     let made_range_holidays_vec: Vec<NaiveDate> = holidays_vec.iter().cloned().filter(|holiday| {
-        (start_year <= holiday.year()) & (end_year > holiday.year())
+        (start_year <= holiday.year()) & (end_year >= holiday.year())
     }).collect();
 
     made_range_holidays_vec.into_iter().for_each(|range_holiday|{ range_holidays_set.insert(range_holiday); });
